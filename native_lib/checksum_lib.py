@@ -49,11 +49,11 @@ def get_crc32(data: str) -> dict:
     return {"CRC32_dec": crc32_call(data.encode()), "CRC32_hex": hex(crc32_call(data.encode()))}
 
 
-def get_fletcher32(string):
+def get_fletcher32(data: str) -> dict:
     """
     Returns the Fletcher32 checksum value in decimal and hexadecimal format.
     """
-    step_1 = list(map(ord, string))
+    step_1 = list(map(ord, data))
     step_2 = [sum(step_1[:i]) % 65535 for i in range(len(step_1)+1)]
     fletcher_result = (sum(step_2) << 16) | max(step_2)
     return {"Fletcher32_dec": fletcher_result, "Fletcher32_hex": hex(fletcher_result)}
