@@ -28,8 +28,8 @@ def get_cesar_encryption(data: str, key: int) -> dict:
     encrypted_data_unicode_list = list()
     encrypted_data_string = str()
     for char_iterator in data:  # add character code and key value
-        encrypted_data_unicode_list.append((ord(char_iterator) + key) % 1114111)
-        encrypted_data_string += chr((ord(char_iterator) + key) % 1114111)
+        encrypted_data_unicode_list.append((ord(char_iterator) + key) % 1114112)
+        encrypted_data_string += chr((ord(char_iterator) + key) % 1114112)
     return {"encrypted_string": encrypted_data_string, "encrypted_character_codes": encrypted_data_unicode_list}
 
 
@@ -41,8 +41,8 @@ def get_cesar_decryption(data: str, key: int) -> dict:
     decrypted_data_unicode_list = list()
     decrypted_data_string = str()
     for char_iterator in data:  # sub character code and key value
-        decrypted_data_unicode_list.append((ord(char_iterator) - key) % 1114111)
-        decrypted_data_string += chr((ord(char_iterator) - key) % 1114111)
+        decrypted_data_unicode_list.append((ord(char_iterator) - key) % 1114112)
+        decrypted_data_string += chr((ord(char_iterator) - key) % 1114112)
     return {"decrypted_string": decrypted_data_string, "decrypted_character_codes": decrypted_data_unicode_list}
 
 
@@ -97,8 +97,8 @@ def get_monoalphabetic_encryption(data: str, key: str) -> dict:
     encrypted_data_unicode_list = list()
     encrypted_data_string = str()
     for char_iterator in data:  # add character code and key_code value
-        encrypted_data_unicode_list.append((ord(char_iterator) + key_code) % 1114111)
-        encrypted_data_string += chr((ord(char_iterator) + key_code) % 1114111)
+        encrypted_data_unicode_list.append((ord(char_iterator) + key_code) % 1114112)
+        encrypted_data_string += chr((ord(char_iterator) + key_code) % 1114112)
     return {"encrypted_string": encrypted_data_string, "encrypted_character_codes": encrypted_data_unicode_list}
 
 
@@ -115,8 +115,8 @@ def get_monoalphabetic_decryption(data: str, key: str) -> dict:
     decrypted_data_unicode_list = list()
     decrypted_data_string = str()
     for char_iterator in data:  # sub character code and key_code value
-        decrypted_data_unicode_list.append((ord(char_iterator) - key_code) % 1114111)
-        decrypted_data_string += chr((ord(char_iterator) - key_code) % 1114111)
+        decrypted_data_unicode_list.append((ord(char_iterator) - key_code) % 1114112)
+        decrypted_data_string += chr((ord(char_iterator) - key_code) % 1114112)
     return {"decrypted_string": decrypted_data_string, "decrypted_character_codes": decrypted_data_unicode_list}
 
 
@@ -156,7 +156,6 @@ def get_bigram_decryption(data: list, key: str) -> dict:
                         decrypted_data_unicode_list.append(i)
                         decrypted_data_unicode_list.append(j)
                         decrypted_data_string += chr(i) + chr(j)
-                        print(decrypted_data_string)
                         stop_search_flag = True
                         break
             else:
@@ -167,3 +166,4 @@ def get_bigram_decryption(data: list, key: str) -> dict:
 
 if __name__ == "__main__":
     pass
+
