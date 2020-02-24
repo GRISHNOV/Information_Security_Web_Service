@@ -1,0 +1,19 @@
+{% extends "core/base.html" %}
+
+{% block title %}Decryption{% endblock %}
+
+{% block main %}
+    <div class="user_output_data_block">
+        <h3 align="center">Unicode Text Decryption</h3>
+        <p>Тип шифра и используемый алгоритм контроля<br> целостности определяется автоматически<br> из метаданных тегов шифротекта</p>
+        <form action="DECRYPTION_USER_INPUT_PYTHON_SCRIPT.py" name="user_data_decryption_form" method="POST">
+            <input type="password" name="user_password" placeholder="Пароль" id="password_input" autocomplete="off"><br><br>
+            <textarea name="msg" cols="45" rows="12" placeholder="Закрытый текст для расшифрования"></textarea><br><br>
+            <input type="submit" value="Расшифровать">
+        </form>
+        <br>
+        <hr>
+        <br>
+        <button onclick="window.location.href = '{% url "crypto:decrypt_help" %}';">Справка по расшифрованию</button>
+    </div>
+{% endblock %}

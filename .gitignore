@@ -1,0 +1,5 @@
+backend/venv
+backend/.idea
+
+__pycache__/
+*.py[cod]

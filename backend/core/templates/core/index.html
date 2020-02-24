@@ -1,0 +1,16 @@
+{% extends "core/base.html" %}
+
+{% block title %}Crypto project{% endblock %}
+
+{% block main %}
+    <div class="main_select_block">
+        <h3>Выберите необходимую операцию</h3>
+        <div align="center">
+            <button onclick="window.location.href = '{% url "crypto:encrypt" %}';">Шифрование</button>
+            <br><br>
+            <button onclick="window.location.href = '{% url "crypto:decrypt" %}';">Расшифрование</button>
+            <br><br>
+            <button onclick="window.location.href = '{% url "crypto:hashing" %}';">Хэширование и контрольные суммы</button>
+        </div>
+    </div>
+{% endblock %}

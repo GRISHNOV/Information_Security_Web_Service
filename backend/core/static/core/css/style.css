@@ -1,0 +1,37 @@
+body{
+    background: #acacac;
+}
+
+textarea {
+    resize: none;
+}
+
+div.main_select_block{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 3px solid #0030ff;
+    padding: 50px;
+    border-radius: 10px 10px;
+}
+
+div.user_input_data_block{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 3px solid chartreuse;
+    padding: 50px;
+    border-radius: 10px 10px;
+}
+
+div.user_output_data_block{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 3px solid red;
+    padding: 50px;
+    border-radius: 10px 10px;
+}

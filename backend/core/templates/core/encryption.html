@@ -1,0 +1,27 @@
+{% extends "core/base.html" %}
+
+{% block title %}Encryption{% endblock %}
+
+{% block main %}
+    <div class="user_input_data_block">
+        <h3 align="center">Unicode Text Encryption</h3>
+        <form action="ENCRYPTION_USER_INPUT_PYTHON_SCRIPT.py" name="user_data_encryption_form" method="POST">
+            Алгоритм шифрования:
+            <select name = "encryption_algorithm">
+                <option value = "Caesar" selected>Шифр Цезаря</option>
+                <option value = "Polyalphabetic">Полиалфавитный шифр</option>
+                <option value = "Monoalphabetic">Моноалфавитный шифр</option>
+                <option value = "Bigram">Биграммный шифр</option>
+            </select>
+            <br><br>
+            <br><br>
+            <input type="password" name="user_password" placeholder="Пароль" id="password_input" autocomplete="off"><br><br>
+            <textarea name="msg" cols="45" rows="12" placeholder="Открытый текст для шифрования"></textarea><br><br>
+            <input type="submit" value="Зашифровать">
+        </form>
+        <br>
+        <hr>
+        <br>
+        <button onclick="window.location.href = '{% url "crypto:encrypt_help" %}';">Справка по шифрованию</button>
+    </div>
+{% endblock %}
