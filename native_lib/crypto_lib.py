@@ -131,24 +131,39 @@ def get_bigram_encryption(data: str, key: str) -> dict:
         key_code += ord(char_iterator)
     if len(data) % 2 != 0:  # an even amount of text is needed
         data += ' '
-    encrypted_data_unicode_list = list()
+    encrypted_data_sub_numbers_list = list()
     for i in range(0, len(data) - 1, 2):
-        encrypted_data_unicode_list.append(ord(data[i])*1114112 + ord(data[i+1]) + key_code)
-    return {"encrypted_character_codes": encrypted_data_unicode_list}
+        encrypted_data_sub_numbers_list.append(ord(data[i])*1114112 + ord(data[i+1]) + key_code)
+    encrypted_data_string = str()
+    for code_iterator in encrypted_data_sub_numbers_list:  # padding leading zeros
+        code_iterator = str(code_iterator)
+        while len(code_iterator) < 13:
+            code_iterator = '0' + code_iterator
+        encrypted_data_string += code_iterator
+    return {"encrypted_string": encrypted_data_string, "encrypted_character_codes": encrypted_data_sub_numbers_list}
 
 
-def get_bigram_decryption(data: list, key: str) -> dict:
+def get_bigram_decryption(data: str, key: str) -> dict:
     """
     Bigram cipher. Part for decryption.
     In order not to store a large s-box in memory, we will select each substitution value by enumerating a specific sector of the s-box.
     """
+    parsed_data = list()
+    data_codes = list()
+    data_codes = [data[i:i + 13] for i in range(0, len(data), 13)]
+    for code_iterator in data_codes:  # removing leading zeros
+        for i in range(len(code_iterator)):
+            if code_iterator[i] != '0':
+                code_iterator = code_iterator[i:]
+                parsed_data.append(int(code_iterator))
+                break
     key_code = int()
     for char_iterator in key:
         key_code += ord(char_iterator)
     decrypted_data_unicode_list = list()
     decrypted_data_string = str()
     stop_search_flag = False
-    for code_iterator in data:
+    for code_iterator in parsed_data:
         for i in range(code_iterator // 1114112, 1114112):
             if not stop_search_flag:
                 for j in range(1114112):
@@ -166,4 +181,3 @@ def get_bigram_decryption(data: list, key: str) -> dict:
 
 if __name__ == "__main__":
     pass
-
