@@ -67,7 +67,7 @@ def get_polyalphabetic_encryption(data: str, key: str) -> dict:
 
 def get_polyalphabetic_decryption(data: str, key: str) -> dict:
     """
-    Vigenère cipher. Part for encryption.
+    Vigenère cipher. Part for decryption.
     For decryption (operate with unicode code): m[i] = (c[i] + n - k[i]) mod n
     Where n = 1114112 (power of UNICODE space), m[i] - char of message, c[i] - char of ciphertext, k[i] - char of key_material (key != key_material)
     The structure of the function is similar to the encryption function described above.
