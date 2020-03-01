@@ -41,15 +41,18 @@ class DecryptionView(View):
         print(msg)
         encrypted_data = msg.get('encrypted_data')
         cipher_algorithm = msg.get('cipher_algorithm')
+        check_sum_algorithm = msg.get('check_sum_algorithm')
+        check_sum_value = msg.get('check_sum_value')
         context = {
             'text': 'Неверный формат введенных данных',
         }
 
         if encrypted_data and cipher_algorithm and user_password:
-            result = decrypt(encrypted_data, user_password, cipher_algorithm)
+            result = decrypt(encrypted_data, user_password, cipher_algorithm, check_sum_algorithm, check_sum_value)
             context = {
                 "text": "Результат",
-                "msg": result
+                "msg": result.get('msg'),
+                "checked": result.get('checked')
             }
 
         return render(request, "core/decryption.html", context)
@@ -102,20 +105,35 @@ def encrypt(msg, user_password, cipher_algorithm, check_sum_algorithm):
             check_sum = checksum_lib.get_crc32(msg)
         elif check_sum_algorithm == "FLETCHER":
             check_sum = checksum_lib.get_fletcher32(msg)
-        result["checksum_value"] = check_sum
-        result["checksum_algorithm"] = check_sum_algorithm
+        result["check_sum_value"] = check_sum
+        result["check_sum_algorithm"] = check_sum_algorithm
 
     return {"json": json.dumps(result, indent=4, sort_keys=True, ensure_ascii=False,), "msg": encrypted.get('encrypted_string')}
 
 
-def decrypt(msg, user_password, cipher_algorithm):
+def decrypt(msg, user_password, cipher_algorithm, check_sum_algorithm, check_sum_value):
     decoded = None
+    check_sum_decoded = None
+
     if cipher_algorithm == "Шифр Цезаря":
-        decoded = crypto_lib.get_cesar_decryption(msg, int(user_password))
+        decoded = crypto_lib.get_cesar_decryption(msg, int(user_password)).get('decrypted_string')
     elif cipher_algorithm == "Моноалфавитный шифр":
-        decoded = crypto_lib.get_monoalphabetic_decryption(msg, user_password)
+        decoded = crypto_lib.get_monoalphabetic_decryption(msg, user_password).get('decrypted_string')
     elif cipher_algorithm == "Полиалфавитный шифр":
-        decoded = crypto_lib.get_polyalphabetic_decryption(msg, user_password)
+        decoded = crypto_lib.get_polyalphabetic_decryption(msg, user_password).get('decrypted_string')
     elif cipher_algorithm == "Биграммный шифр":
-        decoded = crypto_lib.get_bigram_decryption(msg, user_password)
-    return decoded.get('decrypted_string')
+        decoded = crypto_lib.get_bigram_decryption(msg, user_password).get('decrypted_string')
+    result = {
+        "msg": decoded
+    }
+    if check_sum_algorithm:
+        if check_sum_algorithm == "CRC16":
+            check_sum_decoded = checksum_lib.get_crc16_usb(decoded)
+        elif check_sum_algorithm == "CRC24":
+            check_sum_decoded = checksum_lib.get_crc24(decoded)
+        elif check_sum_algorithm == "CRC32":
+            check_sum_decoded = checksum_lib.get_crc32(decoded)
+        elif check_sum_algorithm == "FLETCHER":
+            check_sum_decoded = checksum_lib.get_fletcher32(decoded)
+        result["checked"] = "Совпала" if check_sum_value == check_sum_decoded else "Не совпала"
+    return result
