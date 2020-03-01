@@ -12,10 +12,10 @@
             {% csrf_token %}
             <div class="text"> Алгоритм шифрования: </div>
             <select name = "encryption_algorithm">
-                <option value = "Caesar" selected>Шифр Цезаря</option>
-                <option value = "Polyalphabetic">Полиалфавитный шифр</option>
-                <option value = "Monoalphabetic">Моноалфавитный шифр</option>
-                <option value = "Bigram">Биграммный шифр</option>
+                <option value = "Шифр Цезаря" selected>Шифр Цезаря</option>
+                <option value = "Полиалфавитный шифр">Полиалфавитный шифр</option>
+                <option value = "Моноалфавитный шифр">Моноалфавитный шифр</option>
+                <option value = "Биграммный шифр">Биграммный шифр</option>
             </select>
             <div class="text">Алгоритм вычисления контрольной суммы (необязательно):</div>
             <select name = "check_sum_algorithm">
@@ -33,7 +33,7 @@
         <hr>
         <div class="text"> {{ text }} </div>
         <div class="msg"> {{ msg }}</div>
-        <div class="json"> {{ json }}
-        </div>
+        <div class="text"> {{ jsonText }}</div>
+        <pre class="json"> {{ json }} </pre>
     </div>
 {% endblock %}

@@ -41,11 +41,11 @@ div.msg {
     margin: 20px 0;
 }
 
-div.json {
-    width: 100%;
+pre.json {
+    display: block;
     margin: 10px 0;
     font-size: 20px;
-    line-height: 1.2;
+    white-space: pre;
 }
 
 div.text {

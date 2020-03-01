@@ -21,8 +21,9 @@ class EncryptionView(View):
         if msg and user_password and cipher_algorithm:
             result = encrypt(msg, user_password, cipher_algorithm, check_sum_algorithm)
             context = {
-                'text': 'Зашифрованное сообщение, и для передачи в JSON формате',
+                'text': 'Зашифрованное сообщение',
                 'msg': result.get('msg'),
+                'jsonText': 'JSON для отправки на сервер для расшифрования:',
                 'json': result.get('json')
             }
 
@@ -36,18 +37,22 @@ class DecryptionView(View):
     def post(self, request):
         form = request.POST
         user_password = form.get('user_password')
-        msg = form.get('msg')
-        encrypted_string = None
+        msg = json.loads(form.get('msg'))
+        print(msg)
+        encrypted_data = msg.get('encrypted_data')
+        cipher_algorithm = msg.get('cipher_algorithm')
         context = {
             'text': 'Неверный формат введенных данных',
         }
-        if msg:
-            encrypted_string = msg.get('encrypted_string')
-        if encrypted_string and user_password:
+
+        if encrypted_data and cipher_algorithm and user_password:
+            result = decrypt(encrypted_data, user_password, cipher_algorithm)
             context = {
-                'text': 'Зашифрованное сообщение',
+                "text": "Результат",
+                "msg": result
             }
-        return render(request, "core/encryption.html", context)
+
+        return render(request, "core/decryption.html", context)
 
 
 class IndexView(View):
@@ -73,13 +78,13 @@ class HashingView(View):
 def encrypt(msg, user_password, cipher_algorithm, check_sum_algorithm):
     encrypted = None
     check_sum = None
-    if cipher_algorithm == "Caesar":
+    if cipher_algorithm == "Шифр Цезаря":
         encrypted = crypto_lib.get_cesar_encryption(msg, int(user_password))
-    elif cipher_algorithm == "Monoalphabetic":
+    elif cipher_algorithm == "Моноалфавитный шифр":
         encrypted = crypto_lib.get_monoalphabetic_encryption(msg, user_password)
-    elif cipher_algorithm == "Polyalphabetic":
+    elif cipher_algorithm == "Полиалфавитный шифр":
         encrypted = crypto_lib.get_polyalphabetic_encryption(msg, user_password)
-    elif cipher_algorithm == "Bigram":
+    elif cipher_algorithm == "Биграммный шифр":
         encrypted = crypto_lib.get_bigram_encryption(msg, user_password)
 
     result = {
@@ -100,9 +105,17 @@ def encrypt(msg, user_password, cipher_algorithm, check_sum_algorithm):
         result["checksum_value"] = check_sum
         result["checksum_algorithm"] = check_sum_algorithm
 
-    return {"json": json.dumps(result), "msg": encrypted.get('encrypted_string')}
+    return {"json": json.dumps(result, indent=4, sort_keys=True, ensure_ascii=False,), "msg": encrypted.get('encrypted_string')}
 
 
-def decrypt(encrypted_string, user_password):
-    decrypted = None
-
+def decrypt(msg, user_password, cipher_algorithm):
+    decoded = None
+    if cipher_algorithm == "Шифр Цезаря":
+        decoded = crypto_lib.get_cesar_decryption(msg, int(user_password))
+    elif cipher_algorithm == "Моноалфавитный шифр":
+        decoded = crypto_lib.get_monoalphabetic_decryption(msg, user_password)
+    elif cipher_algorithm == "Полиалфавитный шифр":
+        decoded = crypto_lib.get_polyalphabetic_decryption(msg, user_password)
+    elif cipher_algorithm == "Биграммный шифр":
+        decoded = crypto_lib.get_bigram_decryption(msg, user_password)
+    return decoded.get('decrypted_string')
