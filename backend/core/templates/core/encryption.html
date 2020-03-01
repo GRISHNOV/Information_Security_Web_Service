@@ -4,24 +4,36 @@
 
 {% block main %}
     <div class="user_input_data_block">
-        <h3 align="center">Unicode Text Encryption</h3>
-        <form action="ENCRYPTION_USER_INPUT_PYTHON_SCRIPT.py" name="user_data_encryption_form" method="POST">
-            Алгоритм шифрования:
+        <h3 align="center">
+            Unicode Text Encryption
+            <button class="help" onclick="window.location.href = '{% url "crypto:encrypt_help" %}';">Справка по шифрованию</button>
+        </h3>
+        <form action={% url 'crypto:encrypt' %} name="user_data_encryption_form" method="POST">
+            {% csrf_token %}
+            <div class="text"> Алгоритм шифрования: </div>
             <select name = "encryption_algorithm">
                 <option value = "Caesar" selected>Шифр Цезаря</option>
                 <option value = "Polyalphabetic">Полиалфавитный шифр</option>
                 <option value = "Monoalphabetic">Моноалфавитный шифр</option>
                 <option value = "Bigram">Биграммный шифр</option>
             </select>
-            <br><br>
-            <br><br>
-            <input type="password" name="user_password" placeholder="Пароль" id="password_input" autocomplete="off"><br><br>
+            <div class="text">Алгоритм вычисления контрольной суммы (необязательно):</div>
+            <select name = "check_sum_algorithm">
+                <option disabled selected value> -- выберите алгоритм -- </option>
+                <option value = "CRC16">CRC16</option>
+                <option value = "CRC24">CRC24</option>
+                <option value = "CRC32">CRC32</option>
+                <option value = "FLETCHER">FLETCHER</option>
+            </select>
+            <div class="text">Ключ</div>
+            <input name="user_password" placeholder="Пароль" id="password_input" autocomplete="off"><br><br>
             <textarea name="msg" cols="45" rows="12" placeholder="Открытый текст для шифрования"></textarea><br><br>
             <input type="submit" value="Зашифровать">
         </form>
-        <br>
         <hr>
-        <br>
-        <button onclick="window.location.href = '{% url "crypto:encrypt_help" %}';">Справка по шифрованию</button>
+        <div class="text"> {{ text }} </div>
+        <div class="msg"> {{ msg }}</div>
+        <div class="json"> {{ json }}
+        </div>
     </div>
 {% endblock %}

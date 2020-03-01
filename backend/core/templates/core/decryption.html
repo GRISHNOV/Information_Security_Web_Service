@@ -6,7 +6,8 @@
     <div class="user_output_data_block">
         <h3 align="center">Unicode Text Decryption</h3>
         <p>Тип шифра и используемый алгоритм контроля<br> целостности определяется автоматически<br> из метаданных тегов шифротекта</p>
-        <form action="DECRYPTION_USER_INPUT_PYTHON_SCRIPT.py" name="user_data_decryption_form" method="POST">
+        <form name="user_data_decryption_form" method="POST">
+            {% csrf_token %}
             <input type="password" name="user_password" placeholder="Пароль" id="password_input" autocomplete="off"><br><br>
             <textarea name="msg" cols="45" rows="12" placeholder="Закрытый текст для расшифрования"></textarea><br><br>
             <input type="submit" value="Расшифровать">
