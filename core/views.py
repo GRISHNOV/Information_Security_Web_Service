@@ -5,6 +5,29 @@ from native_lib import crypto_lib, checksum_lib
 import json
 
 
+class HashingView(View):
+    def get(self, request):
+        return render(request, "core/hashing.html")
+
+    def post(self, request):
+        form = request.POST
+        check_sum_algorithm = form.get('check_sum_algorithm')
+        msg = form.get('msg')
+        context = {
+            'text': 'Неверно заполнены поля',
+        }
+        if msg and check_sum_algorithm:
+            result = hashing(msg, check_sum_algorithm)
+            context = {
+                'text': 'Ваше сообщение:',
+                'msg': form.get('msg'),
+                'jsonText': 'Контрольная сумма для сообщения:',
+                'json': result.get('json')
+            }
+
+        return render(request, "core/hashing.html", context)
+
+
 class EncryptionView(View):
     def get(self, request):
         return render(request, "core/encryption.html")
@@ -73,9 +96,21 @@ class DecryptionHelpView(View):
         return render(request, "core/help_decryption.html")
 
 
-class HashingView(View):
-    def get(self, request):
-        return render(request, "core/hashing.html")
+def hashing(msg, check_sum_algorithm):
+    result = dict()
+
+    if check_sum_algorithm == "CRC16":
+        check_sum = checksum_lib.get_crc16_modbus(msg)
+    elif check_sum_algorithm == "CRC24":
+        check_sum = checksum_lib.get_crc24(msg)
+    elif check_sum_algorithm == "CRC32":
+        check_sum = checksum_lib.get_crc32(msg)
+    elif check_sum_algorithm == "FLETCHER":
+        check_sum = checksum_lib.get_fletcher32(msg)
+    result["check_sum_value"] = check_sum
+    result["check_sum_algorithm"] = check_sum_algorithm
+
+    return {"json": json.dumps(result, indent=4, sort_keys=True, ensure_ascii=False,)}
 
 
 def encrypt(msg, user_password, cipher_algorithm, check_sum_algorithm):

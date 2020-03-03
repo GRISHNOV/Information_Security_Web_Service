@@ -3,5 +3,28 @@
 {% block title %}Hashing{% endblock %}
 
 {% block main %}
-    <h1>Тут POST форма как на странице для шифрования, только в селексе на выбор: CRC_16,CRC_24,CRC_32,Fletcher</h1>
+    <div class="user_input_data_block" align="center"> <!-- temporary align -->
+        <h3 align="center">
+            Unicode Text Checksum
+        </h3>
+        <form action={% url 'crypto:hashing' %} name="user_data_checksum_form" method="POST">
+            {% csrf_token %}
+            <div class="text">Алгоритм вычисления контрольной суммы:</div>
+            <select name = "check_sum_algorithm">
+                <option disabled selected value> -- выберите алгоритм -- </option>
+                <option value = "CRC16">CRC16(modbus)</option>
+                <option value = "CRC24">CRC24</option>
+                <option value = "CRC32">CRC32</option>
+                <option value = "FLETCHER">FLETCHER</option>
+            </select>
+            <br>
+            <textarea name="msg" cols="45" rows="12" placeholder="Текст для вычисления"></textarea><br><br>
+            <input type="submit" value="Вычислить">
+        </form>
+        <hr>
+        <div class="text"> {{ text }} </div>
+        <div class="msg"> {{ msg }}</div>
+        <div class="text"> {{ jsonText }}</div>
+        <pre class="json"> {{ json }} </pre>
+    </div>
 {% endblock %}

@@ -3,7 +3,7 @@
 {% block title %}Encryption{% endblock %}
 
 {% block main %}
-    <div class="user_input_data_block">
+    <div class="user_input_data_block" align="center"> <!-- temporary align -->
         <h3 align="center">
             Unicode Text Encryption
             <button class="help" onclick="window.location.href = '{% url "crypto:encrypt_help" %}';">Справка по шифрованию</button>
@@ -20,14 +20,15 @@
             <div class="text">Алгоритм вычисления контрольной суммы (необязательно):</div>
             <select name = "check_sum_algorithm">
                 <option disabled selected value> -- выберите алгоритм -- </option>
-                <option value = "CRC16">CRC16</option>
+                <option value = "CRC16">CRC16(modbus)</option>
                 <option value = "CRC24">CRC24</option>
                 <option value = "CRC32">CRC32</option>
                 <option value = "FLETCHER">FLETCHER</option>
             </select>
             <div class="text">Ключ</div>
             <input name="user_password" placeholder="Пароль" id="password_input" autocomplete="off"><br><br>
-            <input name="msg" size="80" placeholder="Открытый текст для шифрования"></input><br><br>
+            <!--<input name="msg" size="80" placeholder="Открытый текст для шифрования"></input><br><br>-->
+            <textarea name="msg" cols="45" rows="12" placeholder="Открытый текст для шифрования"></textarea><br><br>
             <input type="submit" value="Зашифровать">
         </form>
         <hr>
