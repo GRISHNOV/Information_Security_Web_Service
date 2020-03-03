@@ -3,7 +3,7 @@
 #
 # Checksum in the current version of the library:
 #
-#       CRC16_usb: YES
+#       CRC16_modbus: YES
 #       CRC24: YES
 #       CRC32: YES
 #       FLETCHER32: YES
@@ -22,13 +22,13 @@ TEST_INPUT_STRING = """\
 """
 
 
-def get_crc16_usb(data: str) -> dict:
+def get_crc16_modbus(data: str) -> dict:
     """
-    Parameters:   Poly: 0x18005   Init-value: 0x0000	XOR-out: 0xFFFF
+    Parameters:   Poly: 0x18005   Init-value: 0xFFFF	XOR-out: 0xFFFF
     Returns the CRC-16-USB checksum value in decimal and hexadecimal format.
     """
-    crc16_call = crcmod.mkCrcFun(0x18005, initCrc=0x0000, xorOut=0xFFFF)
-    return {"CRC16_usb_dec": crc16_call(data.encode()), "CRC16_usb_hex": hex(crc16_call(data.encode()))}
+    crc16_modbus = crcmod.mkCrcFun(0x18005, initCrc=0xFFFF, xorOut=0x0000)
+    return {"CRC16_usb_dec": crc16_modbus(data.encode()), "CRC16_usb_hex": hex(crc16_modbus(data.encode()))}
 
 
 def get_crc24(data: str) -> dict:
