@@ -1,0 +1,33 @@
+{% extends "core/base.html" %}
+
+{% block title %}AES Decryption{% endblock %}
+
+{% block main %}
+    <div>
+        <h1 class="mt-3">AES Расшифрование</h1>
+        <form action="{% url 'crypto:aes_decrypt' %}" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="inputSecret">Секрет</label>
+                <input name="secret" type="text" class="form-control" id="inputSecret" placeholder="Введите строку с секретом..." required>
+            </div>
+            <div class="form-group">
+                <label for="inputText">JSON c шифротекстом</label>
+                <textarea name="data" rows="12" class="form-control" id="inputText" placeholder="Вставьте JSON..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Расшифровать</button>
+        </form>
+    </div>
+    {% if error %}
+        <div>
+            <h1 class="mt-3">Ошибка</h1>
+            <h3>{{ error }}</h3>
+        </div>
+    {% endif %}
+    {% if text %}
+        <div>
+            <h1 class="mt-3">Расшифрованный текст</h1>
+            <pre><code>{{ text }}</code></pre>
+        </div>
+    {% endif %}
+{% endblock %}

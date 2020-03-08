@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.views import View
-from django.http import HttpResponse
 from native_lib import crypto_lib, checksum_lib
 import json
+
+from native_lib.AES import AES
 
 
 class HashingView(View):
@@ -172,3 +173,67 @@ def decrypt(msg, user_password, cipher_algorithm, check_sum_algorithm, check_sum
             check_sum_decoded = checksum_lib.get_fletcher32(decoded)
         result["checked"] = "Совпала" if check_sum_value == check_sum_decoded else "Не совпала"
     return result
+
+
+class AESEncryptionView(View):
+    def get(self, request):
+        return render(request, "core/aes/encrypt.html")
+
+    def post(self, request):
+        data = request.POST
+
+        secret = data.get('secret')
+        mode = data.get('mode')
+        text = data.get('text')
+
+        if not secret or not mode or not text:
+            context = {
+                'error': 'Заполните все поля...'
+            }
+        else:
+            key = AES.generate_key(secret)
+            iv, encrypted_data = AES.encrypt(text, AES.MODES[mode], key)
+            result = {
+                'encrypted_data': encrypted_data,
+                'cipher_algorithm': 'AES',
+                'cipher_mode': mode,
+                'cipher_iv': iv,
+            }
+            context = {
+                'result': result,
+                'json': json.dumps(result, indent=4),
+            }
+        return render(request, "core/aes/encrypt.html", context)
+
+
+class AESDecryptionView(View):
+    def get(self, request):
+        return render(request, "core/aes/decrypt.html")
+
+    def post(self, request):
+        data = request.POST
+
+        secret = data.get('secret')
+        data = data.get('data')
+
+        if not data or not secret:
+            context = {
+                'error': 'Заполните все поля...'
+            }
+            return render(request, "core/aes/decrypt.html", context)
+
+        try:
+            json_data = json.loads(data)
+        except json.JSONDecodeError:
+            context = {
+                'error': 'Введите корректный json...'
+            }
+            return render(request, "core/aes/decrypt.html", context)
+
+        key = AES.generate_key(secret)
+        text = AES.decrypt(json_data['encrypted_data'], AES.MODES[json_data['cipher_mode']], key, json_data['cipher_iv'])
+        context = {
+            'text': text,
+        }
+
+        return render(request, "core/aes/decrypt.html", context)
