@@ -31,7 +31,7 @@ class HashingView(View):
 
 class EncryptionView(View):
     def get(self, request):
-        return render(request, "core/encryption.html")
+        return render(request, "core/basic/encrypt.html")
 
     def post(self, request):
         form = request.POST
@@ -51,12 +51,12 @@ class EncryptionView(View):
                 'json': result.get('json')
             }
 
-        return render(request, "core/encryption.html", context)
+        return render(request, "core/basic/encrypt.html", context)
 
 
 class DecryptionView(View):
     def get(self, request):
-        return render(request, "core/decryption.html")
+        return render(request, "core/basic/decrypt.html")
 
     def post(self, request):
         form = request.POST
@@ -79,7 +79,7 @@ class DecryptionView(View):
                 "checked": result.get('checked')
             }
 
-        return render(request, "core/decryption.html", context)
+        return render(request, "core/basic/decrypt.html", context)
 
 
 class IndexView(View):

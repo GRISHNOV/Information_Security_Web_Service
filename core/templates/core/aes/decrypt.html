@@ -8,11 +8,11 @@
         <form action="{% url 'crypto:aes_decrypt' %}" method="POST">
             {% csrf_token %}
             <div class="form-group">
-                <label for="inputSecret">Секрет</label>
+                <label for="inputSecret">Секрет:</label>
                 <input name="secret" type="text" class="form-control" id="inputSecret" placeholder="Введите строку с секретом..." required>
             </div>
             <div class="form-group">
-                <label for="inputText">JSON c шифротекстом</label>
+                <label for="inputText">JSON c шифротекстом:</label>
                 <textarea name="data" rows="12" class="form-control" id="inputText" placeholder="Вставьте JSON..." required></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Расшифровать</button>
