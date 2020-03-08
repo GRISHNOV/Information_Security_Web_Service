@@ -1,16 +1,8 @@
 {% extends "core/base.html" %}
 
-{% block title %}Crypto project{% endblock %}
+{% block title %}Information Security Project (ISP){% endblock %}
 
 {% block main %}
-    <div class="main_select_block" align="center"> <!-- temporary align -->
-        <h3>Выберите необходимую операцию</h3>
-        <div align="center">
-            <button onclick="window.location.href = '{% url "crypto:encrypt" %}';">Шифрование</button>
-            <br><br>
-            <button onclick="window.location.href = '{% url "crypto:decrypt" %}';">Расшифрование</button>
-            <br><br>
-            <button onclick="window.location.href = '{% url "crypto:hashing" %}';">Хэширование и контрольные суммы</button>
-        </div>
-    </div>
+    <h1 class="mt-3">Главная страница Information Security Project (ISP)</h1>
+    <p>Ищите нас на <a href="https://github.com/GRISHNOV/Information_Security_Web_Service/" target="_blank">github</a></p>
 {% endblock %}
