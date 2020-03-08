@@ -8,7 +8,7 @@ class AES:
     MODES = {
         'ECB': CryptoAES.MODE_ECB,
         'CBC': CryptoAES.MODE_CBC,
-        'GCM': CryptoAES.MODE_CTR,
+        'GCM': CryptoAES.MODE_GCM,
     }
 
     @staticmethod
@@ -37,12 +37,19 @@ class AES:
 
     @staticmethod
     def encrypt(text, mode, key, iv=Random.new().read(CryptoAES.block_size)):
-        aes = CryptoAES.new(key, mode, iv)
+        if mode == CryptoAES.MODE_ECB:
+            aes = CryptoAES.new(key, mode)
+            iv = b''
+        else:
+            aes = CryptoAES.new(key, mode, iv)
         encrypted_data = aes.encrypt(AES.add_padding(text.encode('utf-8')))
         return iv.hex(), b64encode(encrypted_data).decode('utf-8')
 
     @staticmethod
     def decrypt(encrypted_text, mode, key, iv):
         encrypted_data = b64decode(encrypted_text.encode('utf-8'))
-        aes = CryptoAES.new(key, mode, iv)
+        if mode == CryptoAES.MODE_ECB:
+            aes = CryptoAES.new(key, mode)
+        else:
+            aes = CryptoAES.new(key, mode, bytes.fromhex(iv))
         return AES.remove_padding(aes.decrypt(encrypted_data)).decode('utf-8')

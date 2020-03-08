@@ -190,19 +190,21 @@ class AESEncryptionView(View):
             context = {
                 'error': 'Заполните все поля...'
             }
-        else:
-            key = AES.generate_key(secret)
-            iv, encrypted_data = AES.encrypt(text, AES.MODES[mode], key)
-            result = {
-                'encrypted_data': encrypted_data,
-                'cipher_algorithm': 'AES',
-                'cipher_mode': mode,
-                'cipher_iv': iv,
-            }
-            context = {
-                'result': result,
-                'json': json.dumps(result, indent=4),
-            }
+            return render(request, "core/aes/encrypt.html", context)
+
+        key = AES.generate_key(secret)
+
+        iv, encrypted_data = AES.encrypt(text, AES.MODES[mode], key)
+        result = {
+            'encrypted_data': encrypted_data,
+            'cipher_algorithm': 'AES',
+            'cipher_mode': mode,
+            'cipher_iv': iv,
+        }
+        context = {
+            'result': result,
+            'json': json.dumps(result, indent=4),
+        }
         return render(request, "core/aes/encrypt.html", context)
 
 
@@ -224,14 +226,26 @@ class AESDecryptionView(View):
 
         try:
             json_data = json.loads(data)
-        except json.JSONDecodeError:
+            if  not isinstance(json_data, dict) or\
+                'encrypted_data' not in json_data or not json_data['encrypted_data'] or \
+                'cipher_mode' not in json_data or not json_data['cipher_mode'] or \
+                'cipher_iv' not in json_data:
+                raise KeyError()
+        except (json.JSONDecodeError, KeyError):
             context = {
                 'error': 'Введите корректный json...'
             }
             return render(request, "core/aes/decrypt.html", context)
 
         key = AES.generate_key(secret)
-        text = AES.decrypt(json_data['encrypted_data'], AES.MODES[json_data['cipher_mode']], key, json_data['cipher_iv'])
+        try:
+            text = AES.decrypt(json_data['encrypted_data'], AES.MODES[json_data['cipher_mode']], key, json_data['cipher_iv'])
+        except UnicodeDecodeError:
+            context = {
+                'error': 'Введите корректный секрет...'
+            }
+            return render(request, "core/aes/decrypt.html", context)
+
         context = {
             'text': text,
         }
