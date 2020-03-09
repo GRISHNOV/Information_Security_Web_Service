@@ -3,8 +3,10 @@ Server part of Encryption/Decryption system for the Information Security course 
     
 The frontend version of the project is available in the [repository](https://github.com/denisstasyev/Information_Security_JS).
 
-The main vector of the project presents a version on the Django framework, cryptographic libraries and checksums are implemented in Python
-    
+The main vector of the project presents a version on the Django framework, cryptographic libraries and checksums are implemented in Python. 
+
+___The version for testing will be updated as soon as possible on the [hosting](http://xan-mixan.fun)___
+
 You can find source codes with the PHP version of the backend in the branch [php_backend_version](https://github.com/GRISHNOV/Information_Security_Web_Service/tree/php_backend_version)
     
 ## Creators
