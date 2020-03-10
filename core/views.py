@@ -134,7 +134,7 @@ def encrypt(msg, user_password, cipher_algorithm, check_sum_algorithm):
     encrypted = None
     check_sum = None
     if cipher_algorithm == "Цезарь":
-        encrypted = crypto_lib.get_cesar_encryption(msg, int(user_password))
+        encrypted = crypto_lib.get_cesar_encryption(msg, user_password)
     elif cipher_algorithm == "Моноалфавитный шифр":
         encrypted = crypto_lib.get_monoalphabetic_encryption(msg, user_password)
     elif cipher_algorithm == "Полиалфавитный шифр":
@@ -168,7 +168,7 @@ def decrypt(msg, user_password, cipher_algorithm, check_sum_algorithm, check_sum
     check_sum_decoded = None
 
     if cipher_algorithm == "Цезарь":
-        decoded = crypto_lib.get_cesar_decryption(msg, int(user_password)).get('decrypted_string')
+        decoded = crypto_lib.get_cesar_decryption(msg, user_password).get('decrypted_string')
     elif cipher_algorithm == "Моноалфавитный шифр":
         decoded = crypto_lib.get_monoalphabetic_decryption(msg, user_password).get('decrypted_string')
     elif cipher_algorithm == "Полиалфавитный шифр":

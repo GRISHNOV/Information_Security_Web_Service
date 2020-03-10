@@ -12,6 +12,9 @@
 # -------------------------------------------------
 
 
+from Crypto.Hash import SHA256
+
+
 TEST_INPUT_STRING = """\
 1234567890\n!№;%:?*()\nThe quick brown fox jumps over the lazy dog\n\
 Съешь же ещё этих мягких французских булок да выпей чаю\n\
@@ -19,27 +22,39 @@ TEST_INPUT_STRING = """\
 """
 
 
-def get_cesar_encryption(data: str, key: int) -> dict:
+def get_key_material(data: str) -> str:
+    """
+    Returns the SHA256 value as key material.
+    """
+    sha256_call = SHA256.new()
+    sha256_call.update(data.encode('utf-8'))
+    return sha256_call.hexdigest()
+
+
+def get_cesar_encryption(data: str, key: str) -> dict:
     """
     Caesar cipher. Part for encryption.
     Shifts all characters from the DATA string to the KEY value in the UNICODE table. UNICODE space from 0 to 1,114,111 (0x10FFFF).
+    The KEY value is formed as from_hex_to_dec(SHA256(key)) mod 1114112
     Returns the encrypted string, as well as its corresponding list of unicode characters.
     """
     encrypted_data_unicode_list = list()
     encrypted_data_string = str()
+    key = int(get_key_material(key), 16) % 1114112
     for char_iterator in data:  # add character code and key value
         encrypted_data_unicode_list.append((ord(char_iterator) + key) % 1114112)
         encrypted_data_string += chr((ord(char_iterator) + key) % 1114112)
     return {"encrypted_string": encrypted_data_string, "encrypted_character_codes": encrypted_data_unicode_list}
 
 
-def get_cesar_decryption(data: str, key: int) -> dict:
+def get_cesar_decryption(data: str, key: str) -> dict:
     """
     Caesar cipher. Part for decryption.
     The structure of the function is similar to the encryption function described above.
     """
     decrypted_data_unicode_list = list()
     decrypted_data_string = str()
+    key = int(get_key_material(key), 16) % 1114112
     for char_iterator in data:  # sub character code and key value
         decrypted_data_unicode_list.append((ord(char_iterator) - key) % 1114112)
         decrypted_data_string += chr((ord(char_iterator) - key) % 1114112)
