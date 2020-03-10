@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views import View
-from native_lib import crypto_lib, checksum_lib
+from native_lib import crypto_lib, checksum_lib, hash_lib
 import json
 
 from native_lib.AES import AES
@@ -22,7 +22,7 @@ class HashingView(View):
             context = {
                 'text': 'Ваше сообщение:',
                 'msg': form.get('msg'),
-                'jsonText': 'Контрольная сумма для сообщения:',
+                'jsonText': 'Контрольная сумма / Хеш сообщения в формате Json:',
                 'json': result.get('json')
             }
 
@@ -98,8 +98,7 @@ class DecryptionHelpView(View):
 
 
 def hashing(msg, check_sum_algorithm):
-    result = dict()
-
+    result, check_sum = dict(), dict()
     if check_sum_algorithm == "CRC16":
         check_sum = checksum_lib.get_crc16_modbus(msg)
     elif check_sum_algorithm == "CRC24":
@@ -108,8 +107,25 @@ def hashing(msg, check_sum_algorithm):
         check_sum = checksum_lib.get_crc32(msg)
     elif check_sum_algorithm == "FLETCHER":
         check_sum = checksum_lib.get_fletcher32(msg)
+    elif check_sum_algorithm == "SHA224":
+        check_sum = hash_lib.get_sha224(msg)
+    elif check_sum_algorithm == "SHA256":
+        check_sum = hash_lib.get_sha256(msg)
+    elif check_sum_algorithm == "SHA384":
+        check_sum = hash_lib.get_sha384(msg)
+    elif check_sum_algorithm == "SHA512":
+        check_sum = hash_lib.get_sha512(msg)
+    elif check_sum_algorithm == "SHA3_224":
+        check_sum = hash_lib.get_sha3_224(msg)
+    elif check_sum_algorithm == "SHA3_256":
+        check_sum = hash_lib.get_sha3_256(msg)
+    elif check_sum_algorithm == "SHA3_384":
+        check_sum = hash_lib.get_sha3_384(msg)
+    elif check_sum_algorithm == "SHA3_512":
+        check_sum = hash_lib.get_sha3_512(msg)
     result["check_sum_value"] = check_sum
     result["check_sum_algorithm"] = check_sum_algorithm
+    result["message"] = msg
 
     return {"json": json.dumps(result, indent=4, sort_keys=True, ensure_ascii=False,)}
 
