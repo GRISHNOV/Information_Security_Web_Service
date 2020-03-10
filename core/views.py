@@ -106,7 +106,7 @@ def hashing(msg, check_sum_algorithm):
     elif check_sum_algorithm == "CRC32":
         check_sum = checksum_lib.get_crc32(msg)
     elif check_sum_algorithm == "FLETCHER":
-        check_sum = checksum_lib.get_fletcher32(msg)
+        check_sum = checksum_lib.get_fletcher16(msg)
     elif check_sum_algorithm == "SHA224":
         check_sum = hash_lib.get_sha224(msg)
     elif check_sum_algorithm == "SHA256":
@@ -156,7 +156,7 @@ def encrypt(msg, user_password, cipher_algorithm, check_sum_algorithm):
         elif check_sum_algorithm == "CRC32":
             check_sum = checksum_lib.get_crc32(msg)
         elif check_sum_algorithm == "FLETCHER":
-            check_sum = checksum_lib.get_fletcher32(msg)
+            check_sum = checksum_lib.get_fletcher16(msg)
         result["check_sum_value"] = check_sum
         result["check_sum_algorithm"] = check_sum_algorithm
 
@@ -186,7 +186,7 @@ def decrypt(msg, user_password, cipher_algorithm, check_sum_algorithm, check_sum
         elif check_sum_algorithm == "CRC32":
             check_sum_decoded = checksum_lib.get_crc32(decoded)
         elif check_sum_algorithm == "FLETCHER":
-            check_sum_decoded = checksum_lib.get_fletcher32(decoded)
+            check_sum_decoded = checksum_lib.get_fletcher16(decoded)
         result["checked"] = "Совпала" if check_sum_value == check_sum_decoded else "Не совпала"
     return result
 
