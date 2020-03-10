@@ -44,7 +44,7 @@ def get_sha224(data: str) -> dict:
     Returns the SHA224 hash value (hex).
     """
     sha224_call = SHA224.new()
-    sha224_call.update(data.encode())
+    sha224_call.update(data.encode('utf-8'))
     return {"SHA224_hex": sha224_call.hexdigest()}
 
 
@@ -53,7 +53,7 @@ def get_sha256(data: str) -> dict:
     Returns the SHA256 value (hex).
     """
     sha256_call = SHA256.new()
-    sha256_call.update(data.encode())
+    sha256_call.update(data.encode('utf-8'))
     return {"SHA256_hex": sha256_call.hexdigest()}
 
 
@@ -62,7 +62,7 @@ def get_sha384(data: str) -> dict:
     Returns the SHA384 value (hex).
     """
     sha384_call = SHA384.new()
-    sha384_call.update(data.encode())
+    sha384_call.update(data.encode('utf-8'))
     return {"SHA384_hex": sha384_call.hexdigest()}
 
 
@@ -71,7 +71,7 @@ def get_sha512(data: str) -> dict:
     Returns the SHA512 value (hex).
     """
     sha512_call = SHA512.new()
-    sha512_call.update(data.encode())
+    sha512_call.update(data.encode('utf-8'))
     return {"SHA512_hex": sha512_call.hexdigest()}
 
 
@@ -80,7 +80,7 @@ def get_sha3_224(data: str) -> dict:
     Returns the SHA3_224 hash value (hex).
     """
     sha3_224_call = SHA3_224.new()
-    sha3_224_call.update(data.encode())
+    sha3_224_call.update(data.encode('utf-8'))
     return {"SHA3_224_hex": sha3_224_call.hexdigest()}
 
 
@@ -89,7 +89,7 @@ def get_sha3_256(data: str) -> dict:
     Returns the SHA3_256 hash value (hex).
     """
     sha3_256_call = SHA3_256.new()
-    sha3_256_call.update(data.encode())
+    sha3_256_call.update(data.encode('utf-8'))
     return {"SHA3_256_hex": sha3_256_call.hexdigest()}
 
 
@@ -98,7 +98,7 @@ def get_sha3_384(data: str) -> dict:
     Returns the SHA3_384 hash value (hex).
     """
     sha3_384_call = SHA3_384.new()
-    sha3_384_call.update(data.encode())
+    sha3_384_call.update(data.encode('utf-8'))
     return {"SHA3_384_hex": sha3_384_call.hexdigest()}
 
 
@@ -107,9 +107,9 @@ def get_sha3_512(data: str) -> dict:
     Returns the SHA3_512 hash value (hex).
     """
     sha3_512_call = SHA3_512.new()
-    sha3_512_call.update(data.encode())
+    sha3_512_call.update(data.encode('utf-8'))
     return {"SHA3_384_hex": sha3_512_call.hexdigest()}
 
 
 if __name__ == "__main__":
-    print(get_sha3_512('test'))
+    pass
