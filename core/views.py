@@ -4,6 +4,7 @@ from native_lib import crypto_lib, checksum_lib, hash_lib
 import json
 
 from native_lib.AES import AES
+from native_lib.GOST import GOST
 
 
 class HashingView(View):
@@ -269,3 +270,82 @@ class AESDecryptionView(View):
         }
 
         return render(request, "core/aes/decrypt.html", context)
+
+
+class GOSTEncryptionView(View):
+    def get(self, request):
+        return render(request, "core/gost/encrypt.html")
+
+    def post(self, request):
+        data = request.POST
+
+        secret = data.get('secret')
+        mode = data.get('mode')
+        text = data.get('text')
+
+        if not secret or not mode or not text:
+            context = {
+                'error': 'Заполните все поля...'
+            }
+            return render(request, "core/gost/encrypt.html", context)
+
+        key = GOST.generate_key(secret)
+
+        iv, encrypted_data = GOST.encrypt(text, mode, key)
+        result = {
+            'encrypted_data': encrypted_data,
+            'cipher_algorithm': 'GOST',
+            'cipher_mode': mode,
+            'cipher_iv': iv,
+        }
+        context = {
+            'result': result,
+            'json': json.dumps(result, indent=4),
+        }
+        return render(request, "core/gost/encrypt.html", context)
+
+
+class GOSTDecryptionView(View):
+    def get(self, request):
+        return render(request, "core/gost/decrypt.html")
+
+    def post(self, request):
+        data = request.POST
+
+        secret = data.get('secret')
+        data = data.get('data')
+
+        if not data or not secret:
+            context = {
+                'error': 'Заполните все поля...'
+            }
+            return render(request, "core/gost/decrypt.html", context)
+
+        try:
+            json_data = json.loads(data)
+            if not isinstance(json_data, dict) or \
+                    'encrypted_data' not in json_data or not json_data['encrypted_data'] or \
+                    'cipher_mode' not in json_data or not json_data['cipher_mode'] or \
+                    'cipher_iv' not in json_data:
+                raise KeyError()
+        except (json.JSONDecodeError, KeyError):
+            context = {
+                'error': 'Введите корректный json...'
+            }
+            return render(request, "core/gost/decrypt.html", context)
+
+        key = GOST.generate_key(secret)
+        try:
+            text = GOST.decrypt(json_data['encrypted_data'], json_data['cipher_mode'], key,
+                               json_data['cipher_iv'])
+        except UnicodeDecodeError:
+            context = {
+                'error': 'Введите корректный секрет...'
+            }
+            return render(request, "core/gost/decrypt.html", context)
+
+        context = {
+            'text': text,
+        }
+
+        return render(request, "core/gost/decrypt.html", context)
