@@ -41,6 +41,16 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url "crypto:hashing" %}">Хэширование и CRC</a>
                     </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          GOST
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                          <a class="dropdown-item" href="{% url 'crypto:gost_encrypt' %}">Шифрование</a>
+                          <a class="dropdown-item" href="{% url 'crypto:gost_decrypt' %}">Дешифрование</a>
+                        </div>
+                    </li>
                 </ul>
             </div>
 
