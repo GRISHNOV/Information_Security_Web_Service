@@ -70,7 +70,7 @@ def get_crc16_modbus(data: str) -> dict:
     return {"CRC16_usb_dec": crc16_modbus(data.encode()), "CRC16_usb_hex": hex(crc16_modbus(data.encode()))}
 
 
-def get_crc24(data):
+def get_crc24(data: str) -> dict:
     """
     Implementation of the CRC-24 algorithm from OpenPGP.
     Returns the CRC-24 checksum value in decimal and hexadecimal format.
@@ -91,7 +91,7 @@ def get_crc32(data: str) -> dict:
     return {"CRC32_dec": crc32_call(data.encode()), "CRC32_hex": hex(crc32_call(data.encode()))}
 
 
-def get_fletcher16(data):
+def get_fletcher16(data:str) -> dict:
     """
     Returns the Fletcher16 checksum value in decimal and hexadecimal format.
     """
