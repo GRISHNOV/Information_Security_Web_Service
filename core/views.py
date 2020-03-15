@@ -123,6 +123,8 @@ def hashing(msg, check_sum_algorithm):
         check_sum = hash_lib.get_sha3_384(msg)
     elif check_sum_algorithm == "SHA3_512":
         check_sum = hash_lib.get_sha3_512(msg)
+    elif check_sum_algorithm == "SHA3_512_KECCAK":
+        check_sum = hash_lib.get_sha3_keccak_512(msg)
     result["check_sum_value"] = check_sum
     result["check_sum_algorithm"] = check_sum_algorithm
     result["message"] = msg

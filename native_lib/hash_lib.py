@@ -17,6 +17,7 @@
 #           SHA3-256: YES
 #           SHA3-384: YES
 #           SHA3-512: YES
+#           SHA3-keccak-512: YES
 #
 # MIPT cryptography course project, 2020
 # -------------------------------------------------
@@ -30,6 +31,7 @@ from Crypto.Hash import SHA3_224
 from Crypto.Hash import SHA3_256
 from Crypto.Hash import SHA3_384
 from Crypto.Hash import SHA3_512
+from Crypto.Hash import keccak
 
 
 TEST_INPUT_STRING = """\
@@ -108,7 +110,13 @@ def get_sha3_512(data: str) -> dict:
     """
     sha3_512_call = SHA3_512.new()
     sha3_512_call.update(data.encode('utf-8'))
-    return {"SHA3_384_hex": sha3_512_call.hexdigest()}
+    return {"SHA3_512_hex": sha3_512_call.hexdigest()}
+
+
+def get_sha3_keccak_512(data: str) -> dict:
+    sha3_keccak_512_call = keccak.new(digest_bits=512)
+    sha3_keccak_512_call.update(data.encode('utf-8'))
+    return {"SHA3_512_keccak_hex": sha3_keccak_512_call.hexdigest()}
 
 
 if __name__ == "__main__":
