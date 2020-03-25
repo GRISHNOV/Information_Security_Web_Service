@@ -146,6 +146,7 @@ app.post("/aes256ecb_encrypt", urlencodedParser, function (request, response) {
     let user_key = request.body["user_key"];
     let user_data = request.body["user_data"];
     let encrypted_data = encryptAES256_ECB(getNormalizedKey(user_key), user_data);
+    console.log(encrypted_data);
     response.send(`${encrypted_data}`);
 });
 
@@ -156,12 +157,52 @@ app.post("/aes256cbc_encrypt", urlencodedParser, function (request, response) {
     let user_data = request.body["user_data"];
     let user_iv = generateIv();
     let encrypted_data = encryptAES256_CBC(getNormalizedKey(user_key), user_data, user_iv);
-    let r = {
+    let json_resp = {
         "encrypted_data": encrypted_data,
         "user_iv": user_iv
     }
-    console.log(r);
-    response.send(`${r}`);
+    console.log(json_resp);
+    response.send(`${JSON.stringify(json_resp)}`);
+});
+
+app.post("/aes256ctr_encrypt", urlencodedParser, function (request, response) {
+    if(!request.body) return response.sendStatus(400);
+    console.log(request.body);
+    let user_key = request.body["user_key"];
+    let user_data = request.body["user_data"];
+    let encrypted_data = encryptAES256_CTR(getNormalizedKey(user_key), user_data);
+    console.log(encrypted_data);
+    response.send(`${encrypted_data}`);
+});
+
+app.post("/aes256cfb_encrypt", urlencodedParser, function (request, response) {
+    if(!request.body) return response.sendStatus(400);
+    console.log(request.body);
+    let user_key = request.body["user_key"];
+    let user_data = request.body["user_data"];
+    let user_iv = generateIv();
+    let encrypted_data = encryptAES256_CFB(getNormalizedKey(user_key), user_data, user_iv);
+    let json_resp = {
+        "encrypted_data": encrypted_data,
+        "user_iv": user_iv
+    }
+    console.log(json_resp);
+    response.send(`${JSON.stringify(json_resp)}`);
+});
+
+app.post("/aes256ofb_encrypt", urlencodedParser, function (request, response) {
+    if(!request.body) return response.sendStatus(400);
+    console.log(request.body);
+    let user_key = request.body["user_key"];
+    let user_data = request.body["user_data"];
+    let user_iv = generateIv();
+    let encrypted_data = encryptAES256_OFB(getNormalizedKey(user_key), user_data, user_iv);
+    let json_resp = {
+        "encrypted_data": encrypted_data,
+        "user_iv": user_iv
+    }
+    console.log(json_resp);
+    response.send(`${JSON.stringify(json_resp)}`);
 });
 
 app.listen(3000);

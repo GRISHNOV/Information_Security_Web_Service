@@ -211,9 +211,6 @@ class AESEncryptionView(View):
             }
             return render(request, "core/aes/encrypt.html", context)
 
-        # key = AES.generate_key(secret)
-        # iv, encrypted_data = AES.encrypt(text, AES.MODES[mode], key)
-
         if mode == "aes256ecb":
             encrypted_result = AES_nodejs.get_aes256ecb_from_nodejs_server(text, secret)
             result = {
@@ -222,23 +219,38 @@ class AESEncryptionView(View):
                 'cipher_iv': "void for ECB",
             }
 
-        # ONLY aes256ecb encryption work on this version. (temporary)
-        # Now migration crypto function Python => NodeJs
+        if mode == "aes256cbc":
+            encrypted_result = AES_nodejs.get_aes256cbc_from_nodejs_server(text, secret)
+            result = {
+                'encrypted_data': json.loads(encrypted_result)["encrypted_data"],
+                'cipher_algorithm': 'AES-256/CBC',
+                'cipher_iv': json.loads(encrypted_result)["user_iv"],
+            }
 
-        # if mode == "aes256cbc":
-        #     encrypted_result = AES_nodejs.get_aes256cbc_from_nodejs_server(text, secret)
-        #     result = {
-        #         'encrypted_data': encrypted_result,
-        #         'cipher_algorithm': 'AES-256/CBC',
-        #         'cipher_iv': "TEMP!",
-        #     }
+        if mode == "aes256ctr":
+            encrypted_result = AES_nodejs.get_aes256ctr_from_nodejs_server(text, secret)
+            result = {
+                'encrypted_data': encrypted_result["encrypted_data"].decode("utf-8"),
+                'cipher_algorithm': 'AES-256/CTR',
+                'cipher_iv': "void for CTR",
+            }
 
-        # result = {
-        #     'encrypted_data': encrypted_result["encrypted_data"],
-        #     'cipher_algorithm': 'AES',
-        #     'cipher_mode': mode,
-        #     'cipher_iv': iv,
-        # }
+        if mode == "aes256cfb":
+            encrypted_result = AES_nodejs.get_aes256cfb_from_nodejs_server(text, secret)
+            result = {
+                'encrypted_data': json.loads(encrypted_result)["encrypted_data"],
+                'cipher_algorithm': 'AES-256/CFB',
+                'cipher_iv': json.loads(encrypted_result)["user_iv"],
+            }
+
+        if mode == "aes256ofb":
+            encrypted_result = AES_nodejs.get_aes256ofb_from_nodejs_server(text, secret)
+            result = {
+                'encrypted_data': json.loads(encrypted_result)["encrypted_data"],
+                'cipher_algorithm': 'AES-256/OFB',
+                'cipher_iv': json.loads(encrypted_result)["user_iv"],
+            }
+
         context = {
             'result': result,
             'json': json.dumps(result, indent=4),

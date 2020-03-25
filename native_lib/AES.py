@@ -36,6 +36,48 @@ class AES_nodejs:
         response = conn.getresponse()
         return response.read()
 
+    @staticmethod
+    def get_aes256ctr_from_nodejs_server(data: str, key: str) -> dict:
+        params = urllib.parse.urlencode(
+            {
+                'user_data': data,
+                'user_key': key,
+            }
+        )
+        conn = http.client.HTTPConnection("127.0.0.1:3000")
+        headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
+        conn.request('POST', '/aes256ctr_encrypt', params, headers)
+        response = conn.getresponse()
+        return {"encrypted_data": response.read()}
+
+    @staticmethod
+    def get_aes256cfb_from_nodejs_server(data: str, key: str) -> dict:
+        params = urllib.parse.urlencode(
+            {
+                'user_data': data,
+                'user_key': key,
+            }
+        )
+        conn = http.client.HTTPConnection("127.0.0.1:3000")
+        headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
+        conn.request('POST', '/aes256cfb_encrypt', params, headers)
+        response = conn.getresponse()
+        return response.read()
+
+    @staticmethod
+    def get_aes256ofb_from_nodejs_server(data: str, key: str) -> dict:
+        params = urllib.parse.urlencode(
+            {
+                'user_data': data,
+                'user_key': key,
+            }
+        )
+        conn = http.client.HTTPConnection("127.0.0.1:3000")
+        headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
+        conn.request('POST', '/aes256ofb_encrypt', params, headers)
+        response = conn.getresponse()
+        return response.read()
+
 
 class AES:
 
