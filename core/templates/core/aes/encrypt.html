@@ -15,9 +15,16 @@
                 <div class="form-group col-md-4">
                     <label for="inputMode">Режим шифрования:</label>
                     <select name="mode" id="inputMode" class="form-control" required>
+                        <!--
                         <option selected value="ECB">Electronic Code Book (ECB)</option>
                         <option value="CBC">Cipher-Block Chaining (CBC)</option>
                         <option value="GCM">Galois Counter Mode (GCM)</option>
+                        -->
+                        <option value="aes256ecb">AES-256/ECB</option>
+                        <option value="aes256cbc">AES-256/CBC</option>
+                        <option value="aes256ctr">AES-256/CTR</option>
+                        <option value="aes256cfb">AES-256/CFB</option>
+                        <option value="aes256ofb">AES-256/OFB</option>
                     </select>
                 </div>
             </div>
