@@ -3,8 +3,42 @@ from Crypto.Cipher import AES as CryptoAES
 from Crypto import Random
 from base64 import b64decode, b64encode
 
+import urllib.request, urllib.parse, http.client
+
+
+class AES_nodejs:
+
+    @staticmethod
+    def get_aes256ecb_from_nodejs_server(data: str, key: str) -> dict:
+        params = urllib.parse.urlencode(
+            {
+                'user_data': data,
+                'user_key': key,
+            }
+        )
+        conn = http.client.HTTPConnection("127.0.0.1:3000")
+        headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
+        conn.request('POST', '/aes256ecb_encrypt', params, headers)
+        response = conn.getresponse()
+        return {"encrypted_data": response.read()}
+
+    @staticmethod
+    def get_aes256cbc_from_nodejs_server(data: str, key: str) -> dict:
+        params = urllib.parse.urlencode(
+            {
+                'user_data': data,
+                'user_key': key,
+            }
+        )
+        conn = http.client.HTTPConnection("127.0.0.1:3000")
+        headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
+        conn.request('POST', '/aes256cbc_encrypt', params, headers)
+        response = conn.getresponse()
+        return response.read()
+
 
 class AES:
+
     MODES = {
         'ECB': CryptoAES.MODE_ECB,
         'CBC': CryptoAES.MODE_CBC,

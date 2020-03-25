@@ -3,7 +3,7 @@ from django.views import View
 from native_lib import crypto_lib, checksum_lib, hash_lib
 import json
 
-from native_lib.AES import AES
+from native_lib.AES import AES, AES_nodejs
 from native_lib.GOST import GOST
 
 
@@ -211,15 +211,34 @@ class AESEncryptionView(View):
             }
             return render(request, "core/aes/encrypt.html", context)
 
-        key = AES.generate_key(secret)
+        # key = AES.generate_key(secret)
+        # iv, encrypted_data = AES.encrypt(text, AES.MODES[mode], key)
 
-        iv, encrypted_data = AES.encrypt(text, AES.MODES[mode], key)
-        result = {
-            'encrypted_data': encrypted_data,
-            'cipher_algorithm': 'AES',
-            'cipher_mode': mode,
-            'cipher_iv': iv,
-        }
+        if mode == "aes256ecb":
+            encrypted_result = AES_nodejs.get_aes256ecb_from_nodejs_server(text, secret)
+            result = {
+                'encrypted_data': encrypted_result["encrypted_data"].decode("utf-8"),
+                'cipher_algorithm': 'AES-256/ECB',
+                'cipher_iv': "void for ECB",
+            }
+
+        # ONLY aes256ecb encryption work on this version. (temporary)
+        # Now migration crypto function Python => NodeJs
+
+        # if mode == "aes256cbc":
+        #     encrypted_result = AES_nodejs.get_aes256cbc_from_nodejs_server(text, secret)
+        #     result = {
+        #         'encrypted_data': encrypted_result,
+        #         'cipher_algorithm': 'AES-256/CBC',
+        #         'cipher_iv': "TEMP!",
+        #     }
+
+        # result = {
+        #     'encrypted_data': encrypted_result["encrypted_data"],
+        #     'cipher_algorithm': 'AES',
+        #     'cipher_mode': mode,
+        #     'cipher_iv': iv,
+        # }
         context = {
             'result': result,
             'json': json.dumps(result, indent=4),
