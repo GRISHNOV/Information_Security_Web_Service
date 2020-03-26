@@ -212,43 +212,43 @@ class AESEncryptionView(View):
             return render(request, "core/aes/encrypt.html", context)
 
         if mode == "aes256ecb":
-            encrypted_result = AES_nodejs.get_aes256ecb_from_nodejs_server(text, secret)
+            encrypted_result = AES_nodejs.get_aes256ecb_encryption_from_nodejs_server(text, secret)
             result = {
                 'encrypted_data': encrypted_result["encrypted_data"].decode("utf-8"),
                 'cipher_algorithm': 'AES-256/ECB',
-                'cipher_iv': "void for ECB",
+                'initialization_vector': "void for ECB",
             }
 
         if mode == "aes256cbc":
-            encrypted_result = AES_nodejs.get_aes256cbc_from_nodejs_server(text, secret)
+            encrypted_result = AES_nodejs.get_aes256cbc_encryption_from_nodejs_server(text, secret)
             result = {
                 'encrypted_data': json.loads(encrypted_result)["encrypted_data"],
                 'cipher_algorithm': 'AES-256/CBC',
-                'cipher_iv': json.loads(encrypted_result)["user_iv"],
+                'initialization_vector': json.loads(encrypted_result)["user_iv"],
             }
 
         if mode == "aes256ctr":
-            encrypted_result = AES_nodejs.get_aes256ctr_from_nodejs_server(text, secret)
+            encrypted_result = AES_nodejs.get_aes256ctr_encryption_from_nodejs_server(text, secret)
             result = {
                 'encrypted_data': encrypted_result["encrypted_data"].decode("utf-8"),
                 'cipher_algorithm': 'AES-256/CTR',
-                'cipher_iv': "void for CTR",
+                'initialization_vector': "void for CTR",
             }
 
         if mode == "aes256cfb":
-            encrypted_result = AES_nodejs.get_aes256cfb_from_nodejs_server(text, secret)
+            encrypted_result = AES_nodejs.get_aes256cfb_encryption_from_nodejs_server(text, secret)
             result = {
                 'encrypted_data': json.loads(encrypted_result)["encrypted_data"],
                 'cipher_algorithm': 'AES-256/CFB',
-                'cipher_iv': json.loads(encrypted_result)["user_iv"],
+                'initialization_vector': json.loads(encrypted_result)["user_iv"],
             }
 
         if mode == "aes256ofb":
-            encrypted_result = AES_nodejs.get_aes256ofb_from_nodejs_server(text, secret)
+            encrypted_result = AES_nodejs.get_aes256ofb_encryption_from_nodejs_server(text, secret)
             result = {
                 'encrypted_data': json.loads(encrypted_result)["encrypted_data"],
                 'cipher_algorithm': 'AES-256/OFB',
-                'cipher_iv': json.loads(encrypted_result)["user_iv"],
+                'initialization_vector': json.loads(encrypted_result)["user_iv"],
             }
 
         context = {
@@ -278,8 +278,8 @@ class AESDecryptionView(View):
             json_data = json.loads(data)
             if  not isinstance(json_data, dict) or\
                 'encrypted_data' not in json_data or not json_data['encrypted_data'] or \
-                'cipher_mode' not in json_data or not json_data['cipher_mode'] or \
-                'cipher_iv' not in json_data:
+                'cipher_algorithm' not in json_data or not json_data['cipher_algorithm'] or \
+                'initialization_vector' not in json_data:
                 raise KeyError()
         except (json.JSONDecodeError, KeyError):
             context = {
@@ -287,17 +287,38 @@ class AESDecryptionView(View):
             }
             return render(request, "core/aes/decrypt.html", context)
 
-        key = AES.generate_key(secret)
-        try:
-            text = AES.decrypt(json_data['encrypted_data'], AES.MODES[json_data['cipher_mode']], key, json_data['cipher_iv'])
-        except UnicodeDecodeError:
-            context = {
-                'error': 'Введите корректный секрет...'
-            }
-            return render(request, "core/aes/decrypt.html", context)
+        if json_data["cipher_algorithm"] == "AES-256/ECB":
+            decrypted_result = AES_nodejs.get_aes256ecb_decryption_from_nodejs_server(json_data['encrypted_data'],
+                                                                                      secret)
+
+        if json_data["cipher_algorithm"] == "AES-256/CBC":
+            decrypted_result = AES_nodejs.get_aes256cbc_decryption_from_nodejs_server(json_data['encrypted_data'],
+                                                                                      secret, json_data['initialization_vector'])
+
+        if json_data["cipher_algorithm"] == "AES-256/CTR":
+            decrypted_result = AES_nodejs.get_aes256ctr_decryption_from_nodejs_server(json_data['encrypted_data'],
+                                                                                      secret)
+
+        if json_data["cipher_algorithm"] == "AES-256/CFB":
+            decrypted_result = AES_nodejs.get_aes256cfb_decryption_from_nodejs_server(json_data['encrypted_data'],
+                                                                                      secret, json_data['initialization_vector'])
+
+        if json_data["cipher_algorithm"] == "AES-256/OFB":
+            decrypted_result = AES_nodejs.get_aes256ofb_decryption_from_nodejs_server(json_data['encrypted_data'],
+                                                                                      secret, json_data['initialization_vector'])
+
+
+        # key = AES.generate_key(secret)
+        # try:
+        #     text = AES.decrypt(json_data['encrypted_data'], AES.MODES[json_data['cipher_mode']], key, json_data['cipher_iv'])
+        # except UnicodeDecodeError:
+        #     context = {
+        #         'error': 'Введите корректный секрет...'
+        #     }
+        #     return render(request, "core/aes/decrypt.html", context)
 
         context = {
-            'text': text,
+            'text': decrypted_result["decrypted_data"].decode("utf-8"),
         }
 
         return render(request, "core/aes/decrypt.html", context)
