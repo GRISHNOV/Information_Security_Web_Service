@@ -152,7 +152,7 @@ function decryptAES256_OFB(key, encryptedText, iv){
 
 /*
 *
-*   NodeJs local server for AES data encrypt/decrypt from Django
+*   NodeJs local server for AES data encrypt/decrypt from Django requests and some other features
 *   Using HTTP 3000 port for data transmission (POST)
 *
 */
@@ -284,6 +284,15 @@ app.post("/aes256ofb_decrypt", urlencodedParser, function (request, response) {
     let decrypted_data = decryptAES256_OFB(getNormalizedKey(user_key), user_data, user_iv);
     console.log(decrypted_data);
     response.send(`${decrypted_data}`);
+});
+
+app.post("/sha256_numerical_value", urlencodedParser, function (request, response) {
+    if(!request.body) return response.sendStatus(400);
+    console.log(request.body);
+    let user_key = request.body["user_key"];
+    let sha256_numerical_value = getSHA256(user_key)[0];
+    console.log(sha256_numerical_value);
+    response.send(`${sha256_numerical_value}`);
 });
 
 app.listen(3000);

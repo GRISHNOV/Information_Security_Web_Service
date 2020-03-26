@@ -13,6 +13,7 @@
 
 
 from Crypto.Hash import SHA256
+import urllib.request, urllib.parse, http.client
 
 
 TEST_INPUT_STRING = """\
@@ -31,6 +32,22 @@ def get_key_material(data: str) -> str:
     return sha256_call.hexdigest()
 
 
+def get_sha256_numerical_value_nodejs_server(key: str) -> dict:
+    """
+    Interface for interaction with NodeJs sha256 key numeric value generator scheme.
+    """
+    params = urllib.parse.urlencode(
+        {
+            'user_key': key,
+        }
+    )
+    conn = http.client.HTTPConnection("127.0.0.1:3000")
+    headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
+    conn.request('POST', '/sha256_numerical_value', params, headers)
+    response = conn.getresponse()
+    return {"sha256_numerical_value": response.read()}
+
+
 def get_cesar_encryption(data: str, key: str) -> dict:
     """
     Caesar cipher. Part for encryption.
@@ -40,7 +57,7 @@ def get_cesar_encryption(data: str, key: str) -> dict:
     """
     encrypted_data_unicode_list = list()
     encrypted_data_string = str()
-    key = int(get_key_material(key), 16) % 1114112
+    key = int(get_sha256_numerical_value_nodejs_server(key)['sha256_numerical_value']) % 1114112
     for char_iterator in data:  # add character code and key value
         encrypted_data_unicode_list.append((ord(char_iterator) + key) % 1114112)
         encrypted_data_string += chr((ord(char_iterator) + key) % 1114112)
@@ -54,7 +71,7 @@ def get_cesar_decryption(data: str, key: str) -> dict:
     """
     decrypted_data_unicode_list = list()
     decrypted_data_string = str()
-    key = int(get_key_material(key), 16) % 1114112
+    key = int(get_sha256_numerical_value_nodejs_server(key)['sha256_numerical_value']) % 1114112
     for char_iterator in data:  # sub character code and key value
         decrypted_data_unicode_list.append((ord(char_iterator) - key) % 1114112)
         decrypted_data_string += chr((ord(char_iterator) - key) % 1114112)
