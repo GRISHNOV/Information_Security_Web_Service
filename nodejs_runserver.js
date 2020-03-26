@@ -5,6 +5,13 @@ const express = require("./node_modules/express/index.js");
 const bodyParser = require("./node_modules/body-parser/index.js");
 
 
+/*
+*
+*   Auxiliary functions for the cryptographic
+*
+*/
+
+
 const LENGTH_OF_ELEMENT_HASHING = 2 ** 32;
 
 
@@ -42,6 +49,13 @@ function preparePlainText(plainText) {
     ]);
     return textUint8ArrayFilled;
 }
+
+
+/*
+*
+*   AES functions
+*
+*/
 
 
 function encryptAES256_CBC(key, plainText, iv) {
@@ -136,6 +150,14 @@ function decryptAES256_OFB(key, encryptedText, iv){
 }
 
 
+/*
+*
+*   NodeJs local server for AES data encrypt/decrypt from Django
+*   Using HTTP 3000 port for data transmission (POST)
+*
+*/
+
+
 console.log("(INIT INFO) Crypto server start work => localhost:3000");
 const app = express();
 const urlencodedParser = bodyParser.urlencoded({extended: false});
@@ -148,6 +170,16 @@ app.post("/aes256ecb_encrypt", urlencodedParser, function (request, response) {
     let encrypted_data = encryptAES256_ECB(getNormalizedKey(user_key), user_data);
     console.log(encrypted_data);
     response.send(`${encrypted_data}`);
+});
+
+app.post("/aes256ecb_decrypt", urlencodedParser, function (request, response) {
+    if(!request.body) return response.sendStatus(400);
+    console.log(request.body);
+    let user_key = request.body["user_key"];
+    let user_data = request.body["user_data"];
+    let decrypted_data = decryptAES256_ECB(getNormalizedKey(user_key), user_data);
+    console.log(decrypted_data);
+    response.send(`${decrypted_data}`);
 });
 
 app.post("/aes256cbc_encrypt", urlencodedParser, function (request, response) {
@@ -165,6 +197,19 @@ app.post("/aes256cbc_encrypt", urlencodedParser, function (request, response) {
     response.send(`${JSON.stringify(json_resp)}`);
 });
 
+app.post("/aes256cbc_decrypt", urlencodedParser, function (request, response) {
+    if(!request.body) return response.sendStatus(400);
+    console.log(request.body);
+    let user_key = request.body["user_key"];
+    let user_data = request.body["user_data"];
+    let user_iv = request.body["user_iv"];
+    user_iv = user_iv.slice(1, -1);
+    user_iv = user_iv.split(',').map(Number);
+    let decrypted_data = decryptAES256_CBC(getNormalizedKey(user_key), user_data, user_iv);
+    console.log(decrypted_data);
+    response.send(`${decrypted_data}`);
+});
+
 app.post("/aes256ctr_encrypt", urlencodedParser, function (request, response) {
     if(!request.body) return response.sendStatus(400);
     console.log(request.body);
@@ -173,6 +218,16 @@ app.post("/aes256ctr_encrypt", urlencodedParser, function (request, response) {
     let encrypted_data = encryptAES256_CTR(getNormalizedKey(user_key), user_data);
     console.log(encrypted_data);
     response.send(`${encrypted_data}`);
+});
+
+app.post("/aes256ctr_decrypt", urlencodedParser, function (request, response) {
+    if(!request.body) return response.sendStatus(400);
+    console.log(request.body);
+    let user_key = request.body["user_key"];
+    let user_data = request.body["user_data"];
+    let decrypted_data = decryptAES256_CTR(getNormalizedKey(user_key), user_data);
+    console.log(decrypted_data);
+    response.send(`${decrypted_data}`);
 });
 
 app.post("/aes256cfb_encrypt", urlencodedParser, function (request, response) {
@@ -190,6 +245,19 @@ app.post("/aes256cfb_encrypt", urlencodedParser, function (request, response) {
     response.send(`${JSON.stringify(json_resp)}`);
 });
 
+app.post("/aes256cfb_decrypt", urlencodedParser, function (request, response) {
+    if(!request.body) return response.sendStatus(400);
+    console.log(request.body);
+    let user_key = request.body["user_key"];
+    let user_data = request.body["user_data"];
+    let user_iv = request.body["user_iv"];
+    user_iv = user_iv.slice(1, -1);
+    user_iv = user_iv.split(',').map(Number);
+    let decrypted_data = decryptAES256_CFB(getNormalizedKey(user_key), user_data, user_iv);
+    console.log(decrypted_data);
+    response.send(`${decrypted_data}`);
+});
+
 app.post("/aes256ofb_encrypt", urlencodedParser, function (request, response) {
     if(!request.body) return response.sendStatus(400);
     console.log(request.body);
@@ -203,6 +271,19 @@ app.post("/aes256ofb_encrypt", urlencodedParser, function (request, response) {
     }
     console.log(json_resp);
     response.send(`${JSON.stringify(json_resp)}`);
+});
+
+app.post("/aes256ofb_decrypt", urlencodedParser, function (request, response) {
+    if(!request.body) return response.sendStatus(400);
+    console.log(request.body);
+    let user_key = request.body["user_key"];
+    let user_data = request.body["user_data"];
+    let user_iv = request.body["user_iv"];
+    user_iv = user_iv.slice(1, -1);
+    user_iv = user_iv.split(',').map(Number);
+    let decrypted_data = decryptAES256_OFB(getNormalizedKey(user_key), user_data, user_iv);
+    console.log(decrypted_data);
+    response.send(`${decrypted_data}`);
 });
 
 app.listen(3000);
