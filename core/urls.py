@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import  EncryptionView, DecryptionView, EncryptionHelpView, DecryptionHelpView, HashingView,\
-                    AESEncryptionView, AESDecryptionView, GOSTDecryptionView, GOSTEncryptionView
+                    AESEncryptionView, AESDecryptionView, GOSTDecryptionView, GOSTEncryptionView, RSAEncryptionView
 
 app_name = 'crypto'
 urlpatterns = [
@@ -15,4 +15,5 @@ urlpatterns = [
     path('aes/decrypt/', AESDecryptionView.as_view(), name="aes_decrypt"),
     path('gost/encrypt/', GOSTEncryptionView.as_view(), name="gost_encrypt"),
     path('gost/decrypt/', GOSTDecryptionView.as_view(), name="gost_decrypt"),
+    path('rsa/encrypt/', RSAEncryptionView.as_view(), name="rsa_encrypt"),
 ]
