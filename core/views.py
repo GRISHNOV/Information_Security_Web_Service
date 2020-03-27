@@ -5,6 +5,7 @@ import json
 
 from native_lib.AES import AES, AES_nodejs
 from native_lib.GOST import GOST
+from native_lib.RSA import RSA_nodejs
 
 
 class HashingView(View):
@@ -307,16 +308,6 @@ class AESDecryptionView(View):
             decrypted_result = AES_nodejs.get_aes256ofb_decryption_from_nodejs_server(json_data['encrypted_data'],
                                                                                       secret, json_data['initialization_vector'])
 
-
-        # key = AES.generate_key(secret)
-        # try:
-        #     text = AES.decrypt(json_data['encrypted_data'], AES.MODES[json_data['cipher_mode']], key, json_data['cipher_iv'])
-        # except UnicodeDecodeError:
-        #     context = {
-        #         'error': 'Введите корректный секрет...'
-        #     }
-        #     return render(request, "core/aes/decrypt.html", context)
-
         context = {
             'text': decrypted_result["decrypted_data"].decode("utf-8"),
         }
@@ -401,3 +392,46 @@ class GOSTDecryptionView(View):
         }
 
         return render(request, "core/gost/decrypt.html", context)
+
+
+class RSAEncryptionView(View):
+    def get(self, request):
+        return render(request, "core/rsa/encrypt.html")
+
+    def post(self, request):
+        data = request.POST
+
+        open_rsa_key_json = data.get('open_rsa_key_json')
+        text = data.get('text')
+
+        if not open_rsa_key_json or not text:
+            context = {
+                'error': 'Заполните все поля...'
+            }
+            return render(request, "core/rsa/encrypt.html", context)
+
+        try:
+            json_data = json.loads(data)
+            if not isinstance(json_data, dict) or \
+                    'open_rsa_key' not in json_data or not json_data['open_rsa_key'] or \
+                    'key_md5' not in json_data or not json_data['key_md5']:
+                raise KeyError()
+        except (json.JSONDecodeError, KeyError):
+            context = {
+                'error': 'Введите корректный json...'
+            }
+            return render(request, "core/rsa/encrypt.html", context)
+
+        #   ____TEMPORARY____
+
+        # result = {
+        #     'encrypted_data': encrypted_data,
+        #     'cipher_algorithm': 'GOST',
+        #     'cipher_mode': mode,
+        #     'cipher_iv': iv,
+        # }
+        # context = {
+        #     'result': result,
+        #     'json': json.dumps(result, indent=4),
+        # }
+        # return render(request, "core/rsa/encrypt.html", context)
