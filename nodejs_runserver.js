@@ -3,6 +3,8 @@ const sha256 = require("./node_modules/crypto-js/sha256.js");
 const crypto_random = require("./node_modules/js-crypto-random/dist/random.js");
 const express = require("./node_modules/express/index.js");
 const bodyParser = require("./node_modules/body-parser/index.js");
+const cryptico = require("./node_modules/cryptico/lib/cryptico.js");
+//const Base64 = require("./node_modules/js-base64/base64.js").Base64;
 
 
 /*
@@ -152,7 +154,25 @@ function decryptAES256_OFB(key, encryptedText, iv){
 
 /*
 *
-*   NodeJs local server for AES data encrypt/decrypt from Django requests and some other features
+*   RSA functions
+*
+*/
+
+
+function generateRSAopenKeyJSON(key_phrase, rsa_key_len){
+    let rsa_pair = cryptico.generateRSAKey(key_phrase, rsa_key_len);
+    let open_key_string = cryptico.publicKeyString(rsa_pair);
+    let open_key_md5 = cryptico.publicKeyID(open_key_string);
+    return {
+        "open_rsa_key": open_key_string,
+        "key_md5": open_key_md5,
+    };
+}
+
+
+/*
+*
+*   NodeJs local server for AES/RSA data encrypt/decrypt from Django requests and some other features
 *   Using HTTP 3000 port for data transmission (POST)
 *
 */
@@ -192,7 +212,7 @@ app.post("/aes256cbc_encrypt", urlencodedParser, function (request, response) {
     let json_resp = {
         "encrypted_data": encrypted_data,
         "user_iv": user_iv
-    }
+    };
     console.log(json_resp);
     response.send(`${JSON.stringify(json_resp)}`);
 });
@@ -240,7 +260,7 @@ app.post("/aes256cfb_encrypt", urlencodedParser, function (request, response) {
     let json_resp = {
         "encrypted_data": encrypted_data,
         "user_iv": user_iv
-    }
+    };
     console.log(json_resp);
     response.send(`${JSON.stringify(json_resp)}`);
 });
@@ -268,7 +288,7 @@ app.post("/aes256ofb_encrypt", urlencodedParser, function (request, response) {
     let json_resp = {
         "encrypted_data": encrypted_data,
         "user_iv": user_iv
-    }
+    };
     console.log(json_resp);
     response.send(`${JSON.stringify(json_resp)}`);
 });
@@ -293,6 +313,16 @@ app.post("/sha256_numerical_value", urlencodedParser, function (request, respons
     let sha256_numerical_value = getSHA256(user_key)[0];
     console.log(sha256_numerical_value);
     response.send(`${sha256_numerical_value}`);
+});
+
+app.post("/rsa_generate_open_key", urlencodedParser, function (request, response) {
+    if(!request.body) return response.sendStatus(400);
+    console.log(request.body);
+    let key_phrase = request.body["key_phrase"];
+    let key_len = request.body["key_len"];
+    let generated_result = generateRSAopenKeyJSON(key_phrase, key_len);
+    console.log(generated_result);
+    response.send(`${JSON.stringify(generated_result)}`);
 });
 
 app.listen(3000);
