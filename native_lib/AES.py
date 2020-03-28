@@ -37,7 +37,7 @@ class AES_nodejs:
         return {"decrypted_data": response.read()}
 
     @staticmethod
-    def get_aes256cbc_encryption_from_nodejs_server(data: str, key: str) -> dict:
+    def get_aes256cbc_encryption_from_nodejs_server(data: str, key: str) -> bytes:
         params = urllib.parse.urlencode(
             {
                 'user_data': data,
@@ -94,7 +94,7 @@ class AES_nodejs:
         return {"decrypted_data": response.read()}
 
     @staticmethod
-    def get_aes256cfb_encryption_from_nodejs_server(data: str, key: str) -> dict:
+    def get_aes256cfb_encryption_from_nodejs_server(data: str, key: str) -> bytes:
         params = urllib.parse.urlencode(
             {
                 'user_data': data,
@@ -123,7 +123,7 @@ class AES_nodejs:
         return {"decrypted_data": response.read()}
 
     @staticmethod
-    def get_aes256ofb_encryption_from_nodejs_server(data: str, key: str) -> dict:
+    def get_aes256ofb_encryption_from_nodejs_server(data: str, key: str) -> bytes:
         params = urllib.parse.urlencode(
             {
                 'user_data': data,
