@@ -411,7 +411,7 @@ class RSAEncryptionView(View):
             return render(request, "core/rsa/encrypt.html", context)
 
         try:
-            json_data = json.loads(data)
+            json_data = json.loads(open_rsa_key_json)
             if not isinstance(json_data, dict) or \
                     'open_rsa_key' not in json_data or not json_data['open_rsa_key'] or \
                     'key_md5' not in json_data or not json_data['key_md5']:
@@ -422,16 +422,71 @@ class RSAEncryptionView(View):
             }
             return render(request, "core/rsa/encrypt.html", context)
 
-        #   ____TEMPORARY____
+        encryption_result = RSA_nodejs.get_rsa_encryption_from_nodejs_server(json_data['open_rsa_key'],
+                                                                             json_data['key_md5'], text)
 
-        # result = {
-        #     'encrypted_data': encrypted_data,
-        #     'cipher_algorithm': 'GOST',
-        #     'cipher_mode': mode,
-        #     'cipher_iv': iv,
-        # }
-        # context = {
-        #     'result': result,
-        #     'json': json.dumps(result, indent=4),
-        # }
-        # return render(request, "core/rsa/encrypt.html", context)
+        try:
+            json_data = json.loads(encryption_result)
+            if not isinstance(json_data, dict) or \
+                    'encryption_result' not in json_data or not json_data['encryption_result']:
+                raise KeyError()
+        except (json.JSONDecodeError, KeyError):
+            context = {
+                'error': 'Не удалось десериализовать данные JSON в ответе от NodeJS...'
+            }
+            return render(request, "core/rsa/encrypt.html", context)
+
+        result = {
+            'encrypted_data':json_data['encryption_result'] ,
+            'cipher_algorithm': 'RSA',
+        }
+        context = {
+            'result': result,
+            'json': json.dumps(result, indent=2),
+        }
+        return render(request, "core/rsa/encrypt.html", context)
+
+
+class RSAOpenKeyGeneratorView(View):
+    def get(self, request):
+        return render(request, "core/rsa/generate_open_key.html")
+
+    def post(self, request):
+        data = request.POST
+
+        secret = data.get('secret')
+        key_len = int(data.get('key_len'))
+
+        if not secret or not key_len:
+            context = {
+                'error': 'Заполните все поля...'
+            }
+            return render(request, "core/rsa/generate_open_key.html", context)
+
+        generated_result = RSA_nodejs.get_rsa_open_key_from_nodejs_server(secret, key_len)
+
+        try:
+            json_data = json.loads(generated_result)
+            if not isinstance(json_data, dict) or \
+                    'open_rsa_key' not in json_data or not json_data['open_rsa_key'] or \
+                    'key_md5' not in json_data or not json_data['key_md5']:
+                raise KeyError()
+        except (json.JSONDecodeError, KeyError):
+            context = {
+                'error': 'Не удалось десериализовать данные JSON в ответе от NodeJS...'
+            }
+            return render(request, "core/rsa/generate_open_key.html", context)
+
+        print('\n')
+        print(json_data)
+        print("\n")
+
+        result = {
+            'open_rsa_key': json_data["open_rsa_key"],
+            'key_md5': json_data["key_md5"],
+        }
+        context = {
+            'result': result,
+            'json': json.dumps(result, indent=2),
+        }
+        return render(request, "core/rsa/generate_open_key.html", context)
