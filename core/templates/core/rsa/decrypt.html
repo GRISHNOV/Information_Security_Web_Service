@@ -1,0 +1,33 @@
+{% extends "core/base.html" %}
+
+{% block title %}RSA Decryption{% endblock %}
+
+{% block main %}
+    <div>
+        <h1 class="mt-3">RSA Расшифрование</h1>
+        <form action="{% url 'crypto:rsa_decrypt' %}" method="POST">
+            {% csrf_token %}
+            <div class="form-group col-md-8">
+                <label for="inputSecret">Ключевая фраза для получения закрытого ключа:</label>
+                <input name="secret" type="text" class="form-control" id="inputSecret" placeholder="Введите строку с секретом..." required>
+            </div>
+            <div class="form-group">
+                <label for="inputText">Шифротекст(JSON):</label>
+                <textarea name="text" rows="12" class="form-control" id="inputText" placeholder="Введите закытый текст..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Расшифровать</button>
+        </form>
+    </div>
+    {% if error %}
+        <div>
+            <h1 class="mt-3">Ошибка</h1>
+            <h3>{{ error }}</h3>
+        </div>
+    {% endif %}
+    {% if decryption_result %}
+        <div>
+            <h1 class="mt-3">Результат расшифрования</h1>
+            <pre><code>{{ decryption_result }}</code></pre>
+        </div>
+    {% endif %}
+{% endblock %}

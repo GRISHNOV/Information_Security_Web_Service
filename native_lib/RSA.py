@@ -31,3 +31,18 @@ class RSA_nodejs:
         conn.request('POST', '/rsa_encryption', params, headers)
         response = conn.getresponse()
         return response.read()
+
+    @staticmethod
+    def get_rsa_decryption_from_nodejs_server(encrypted_data: str, key_phrase: str, key_len: int) -> bytes:
+        params = urllib.parse.urlencode(
+            {
+                'encrypted_data': encrypted_data,
+                'key_phrase': key_phrase,
+                'key_len': key_len,
+            }
+        )
+        conn = http.client.HTTPConnection("127.0.0.1:3000")
+        headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
+        conn.request('POST', '/rsa_decryption', params, headers)
+        response = conn.getresponse()
+        return response.read()

@@ -39,7 +39,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url "crypto:hashing" %}">Хэширование и CRC</a>
+                        <a class="nav-link" href="{% url 'crypto:hashing' %}">Хэширование и CRC</a>
                     </li>
 
                     <li class="nav-item dropdown">
@@ -58,6 +58,7 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                           <a class="dropdown-item" href="{% url 'crypto:rsa_encrypt' %}">Шифрование</a>
+                          <a class="dropdown-item" href="{% url 'crypto:rsa_decrypt' %}">Расшифрование</a>
                           <a class="dropdown-item" href="{% url 'crypto:generate_open_key' %}">Генерация открытого ключа</a>
                         </div>
                     </li>
