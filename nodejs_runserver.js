@@ -4,7 +4,7 @@ const crypto_random = require("./node_modules/js-crypto-random/dist/random.js");
 const express = require("./node_modules/express/index.js");
 const bodyParser = require("./node_modules/body-parser/index.js");
 const cryptico = require("./node_modules/cryptico/lib/cryptico.js");
-//const Base64 = require("./node_modules/js-base64/base64.js").Base64;
+const Base64 = require("./node_modules/js-base64/base64.js").Base64;
 
 
 /*
@@ -169,6 +169,14 @@ function generateRSAopenKeyJSON(key_phrase, rsa_key_len){
     };
 }
 
+function encryptRSA(open_key, plain_text){
+    plain_text = Base64.encode(plain_text);
+    let encryption_result = cryptico.encrypt(plain_text, open_key);
+    return {
+        "encryption_result": encryption_result.cipher,
+    };
+}
+
 
 /*
 *
@@ -323,6 +331,25 @@ app.post("/rsa_generate_open_key", urlencodedParser, function (request, response
     let generated_result = generateRSAopenKeyJSON(key_phrase, key_len);
     console.log(generated_result);
     response.send(`${JSON.stringify(generated_result)}`);
+});
+
+app.post("/rsa_encryption", urlencodedParser, function (request, response) {
+    if(!request.body) return response.sendStatus(400);
+    console.log(request.body);
+    let open_rsa_key = request.body["open_rsa_key"];
+    let key_md5 = request.body["key_md5"];
+    let data = request.body["data"];
+    if (key_md5 !== cryptico.publicKeyID(open_rsa_key)){
+        let encryption_result = {
+            "encrypted_data": "ERROR: the open key was damaged!"
+        };
+        console.log(encryption_result);
+        response.send(`${JSON.stringify(encryption_result)}`);
+    }
+
+    let encryption_result = encryptRSA(open_rsa_key, data);
+    console.log(encryption_result);
+    response.send(`${JSON.stringify(encryption_result)}`);
 });
 
 app.listen(3000);
