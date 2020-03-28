@@ -177,6 +177,15 @@ function encryptRSA(open_key, plain_text){
     };
 }
 
+function decryptRSA(encrypted_data, key_phrase, key_len){
+    let key_struct = cryptico.generateRSAKey(key_phrase, key_len);
+    let decryption_result = cryptico.decrypt(encrypted_data, key_struct);
+    let decrypted_text = Base64.decode(decryption_result.plaintext);
+    return {
+        'decrypted_text': decrypted_text,
+    };
+}
+
 
 /*
 *
@@ -346,10 +355,20 @@ app.post("/rsa_encryption", urlencodedParser, function (request, response) {
         console.log(encryption_result);
         response.send(`${JSON.stringify(encryption_result)}`);
     }
-
     let encryption_result = encryptRSA(open_rsa_key, data);
     console.log(encryption_result);
     response.send(`${JSON.stringify(encryption_result)}`);
+});
+
+app.post("/rsa_decryption", urlencodedParser, function (request, response) {
+    if(!request.body) return response.sendStatus(400);
+    console.log(request.body);
+    let encrypted_data = request.body["encrypted_data"];
+    let key_phrase = request.body["key_phrase"];
+    let key_len = request.body["key_len"];
+    let decryption_result = decryptRSA(encrypted_data, key_phrase, key_len);
+    console.log(decryption_result);
+    response.send(`${JSON.stringify(decryption_result)}`);
 });
 
 app.listen(3000);

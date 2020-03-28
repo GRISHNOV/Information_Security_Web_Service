@@ -414,7 +414,8 @@ class RSAEncryptionView(View):
             json_data = json.loads(open_rsa_key_json)
             if not isinstance(json_data, dict) or \
                     'open_rsa_key' not in json_data or not json_data['open_rsa_key'] or \
-                    'key_md5' not in json_data or not json_data['key_md5']:
+                    'key_md5' not in json_data or not json_data['key_md5'] or \
+                    'RSA_len' not in json_data or not json_data['RSA_len']:
                 raise KeyError()
         except (json.JSONDecodeError, KeyError):
             context = {
@@ -424,6 +425,8 @@ class RSAEncryptionView(View):
 
         encryption_result = RSA_nodejs.get_rsa_encryption_from_nodejs_server(json_data['open_rsa_key'],
                                                                              json_data['key_md5'], text)
+
+        rsa_key_len = json_data['RSA_len']
 
         try:
             json_data = json.loads(encryption_result)
@@ -439,12 +442,51 @@ class RSAEncryptionView(View):
         result = {
             'encrypted_data':json_data['encryption_result'] ,
             'cipher_algorithm': 'RSA',
+            'RSA_len': rsa_key_len,
         }
         context = {
             'result': result,
-            'json': json.dumps(result, indent=2),
+            'json': json.dumps(result, indent=3),
         }
         return render(request, "core/rsa/encrypt.html", context)
+
+
+class RSADecryptionView(View):
+    def get(self, request):
+        return render(request, "core/rsa/decrypt.html")
+
+    def post(self, request):
+        data = request.POST
+
+        close_text_json = data.get('text')
+        secret = data.get('secret')
+
+        if not close_text_json or not secret:
+            context = {
+                'error': 'Заполните все поля...'
+            }
+            return render(request, "core/rsa/decrypt.html", context)
+
+        try:
+            json_data = json.loads(close_text_json)
+            if not isinstance(json_data, dict) or \
+                    'encrypted_data' not in json_data or not json_data['encrypted_data'] or \
+                    'RSA_len' not in json_data or not json_data['RSA_len']:
+                raise KeyError()
+        except (json.JSONDecodeError, KeyError):
+            context = {
+                'error': 'Введите корректный json...'
+            }
+            return render(request, "core/rsa/decrypt.html", context)
+
+        decryption_result = RSA_nodejs.get_rsa_decryption_from_nodejs_server(json_data['encrypted_data'], secret,
+                                                                             int(json_data['RSA_len']))
+
+        context = {
+            'decryption_result': decryption_result.decode('utf-8'),
+            'json': json.dumps(decryption_result.decode('utf-8'), indent=1),
+        }
+        return render(request, "core/rsa/decrypt.html", context)
 
 
 class RSAOpenKeyGeneratorView(View):
@@ -477,16 +519,13 @@ class RSAOpenKeyGeneratorView(View):
             }
             return render(request, "core/rsa/generate_open_key.html", context)
 
-        print('\n')
-        print(json_data)
-        print("\n")
-
         result = {
             'open_rsa_key': json_data["open_rsa_key"],
             'key_md5': json_data["key_md5"],
+            'RSA_len': key_len,
         }
         context = {
             'result': result,
-            'json': json.dumps(result, indent=2),
+            'json': json.dumps(result, indent=3),
         }
         return render(request, "core/rsa/generate_open_key.html", context)
