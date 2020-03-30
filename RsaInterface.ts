@@ -1,7 +1,7 @@
 import * as cryptico from "./RsaSrc/cryptico"; // https://github.com/wwwtyro/cryptico
 import { Base64 } from './RsaSrc/base64'; // https://github.com/dankogai/js-base64
 
-export function generateRSAOpenKey(KeyPhrase: string, RsaKeyLength: number){
+export function generateRSAOpenKey(KeyPhrase: string, RsaKeyLength: number): object{
     /*
     *   Params:
     *   KeyPhrase: this is password from user (can be any utf-8 string).
@@ -20,7 +20,7 @@ export function generateRSAOpenKey(KeyPhrase: string, RsaKeyLength: number){
     }; // Please, do not change this returning object fields -- this is important for synchronization.
 }
 
-export function encryptRSA(OpenKeyValue: string, OpenKeyMD5Value:string, PlainTextValue: string){
+export function encryptRSA(OpenKeyValue: string, OpenKeyMD5Value:string, PlainTextValue: string): object{
     /*
     *   Params:
     *   OpenKeyValue: open key for encryption
@@ -43,7 +43,7 @@ export function encryptRSA(OpenKeyValue: string, OpenKeyMD5Value:string, PlainTe
     }; // Please, do not change this returning object fields -- this is important for synchronization.
 }
 
-export function decryptRSA(CloseText: string, KeyPhrase: string, RsaKeyLength: number){
+export function decryptRSA(CloseText: string, KeyPhrase: string, RsaKeyLength: number): object{
     /*
     *   Params:
     *   CloseText: encrypted text
