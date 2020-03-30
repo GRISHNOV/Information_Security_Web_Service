@@ -483,8 +483,7 @@ class RSADecryptionView(View):
                                                                              int(json_data['RSA_len']))
 
         context = {
-            'decryption_result': decryption_result.decode('utf-8'),
-            'json': json.dumps(decryption_result.decode('utf-8'), indent=1),
+            'decryption_result': json.loads(decryption_result)['decrypted_text'],
         }
         return render(request, "core/rsa/decrypt.html", context)
 
