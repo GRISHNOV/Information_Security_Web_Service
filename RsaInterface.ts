@@ -4,12 +4,12 @@ import { Base64 } from './RsaSrc/base64'; // https://github.com/dankogai/js-base
 export function generateRSAOpenKey(KeyPhrase: string, RsaKeyLength: number): object{
     /*
     *   Params:
-    *   KeyPhrase: this is password from user (can be any utf-8 string).
-    *   RsaKeyLength: use 512 or 1024 (rsa key pair length).
+    *   KeyPhrase: this is password from user (can be any utf-8 string)
+    *   RsaKeyLength: use 512 or 1024 (rsa key pair length)
     *
     *   Purpose:
     *   Generates the RSA key pair and extracts the public key from it for return.
-    *   Also returns the md5 key for integrity control.
+    *   Also returns key length the md5 key for integrity control.
     */
     const RSAKeyPair: object = cryptico.generateRSAKey(KeyPhrase, RsaKeyLength);
     const OpenKeyValue: string = cryptico.publicKeyString(RSAKeyPair);
@@ -17,14 +17,16 @@ export function generateRSAOpenKey(KeyPhrase: string, RsaKeyLength: number): obj
     return {
         "open_rsa_key": OpenKeyValue,
         "key_md5": OpenKeyMD5Value,
+        "RSA_len": RsaKeyLength,
     }; // Please, do not change this returning object fields -- this is important for synchronization.
 }
 
-export function encryptRSA(OpenKeyValue: string, OpenKeyMD5Value:string, PlainTextValue: string): object{
+export function encryptRSA(OpenKeyValue: string, OpenKeyMD5Value:string, RsaKeyLength: number, PlainTextValue: string): object{
     /*
     *   Params:
     *   OpenKeyValue: open key for encryption
     *   OpenKeyMD5Value: check open key for integrity before encryption
+    *   RsaKeyLength: use 512 or 1024 (rsa key pair length)
     *   PlainTextValue: message from user
     *
     *   Purpose:
@@ -40,6 +42,8 @@ export function encryptRSA(OpenKeyValue: string, OpenKeyMD5Value:string, PlainTe
     const CloseText: string = EncryptionResult['cipher'];
     return {
         "encryption_result": CloseText,
+        "cipher_algorithm": "RSA",
+        "RSA_len": RsaKeyLength,
     }; // Please, do not change this returning object fields -- this is important for synchronization.
 }
 
@@ -47,8 +51,8 @@ export function decryptRSA(CloseText: string, KeyPhrase: string, RsaKeyLength: n
     /*
     *   Params:
     *   CloseText: encrypted text
-    *   KeyPhrase: this is password from user (can be any utf-8 string).
-    *   RsaKeyLength: use 512 or 1024 (rsa key pair length).
+    *   KeyPhrase: this is password from user (can be any utf-8 string)
+    *   RsaKeyLength: use 512 or 1024 (rsa key pair length)
     *
     *   Purpose:
     *   Performs decryption.
