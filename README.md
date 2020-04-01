@@ -1,3 +1,7 @@
+<p align="center"> 
+<img src="https://uploads-ssl.webflow.com/5d68f4898dfed907ad5a9edd/5d6e1673141661e4e8e99276_animat-lock-color.gif" width="200">
+</p>
+
 # Information_Security_Web_Service
 Server part of Encryption/Decryption system for the Information Security course by Vladimirov at MIPT
     
@@ -12,6 +16,12 @@ You can find source codes with the PHP version of the backend in the branch [php
 ## Creators
     
 This project was created by: [Ilya Grishnov](https://github.com/GRISHNOV), [Roman Maslov](https://github.com/jokerety), [Maxim Morev](https://github.com/Highoc)
+
+## Architecture
+
+The server software organization has the structure described below:
+
+![alt text][architecture]
     
 ## Available Ciphers
 
@@ -58,6 +68,7 @@ This cipher is based on the sequential replacement of pairs of characters from p
 
 ![alt text][BigramCipher_logo]
 
+[architecture]: https://github.com/GRISHNOV/Information_Security_Web_Service/blob/master/doc/architecture.png
 [ceaserCipher_logo]: https://cdncontribute.geeksforgeeks.org/wp-content/uploads/ceaserCipher-1.png
 [BigramCipher_logo]: https://sites.google.com/site/anisimovkhv/_/rsrc/1385774017706/learning/kripto/lecture/tema4/shifr_porta.png
 [BigramEncrypt]: https://latex.codecogs.com/gif.latex?%24%24c%5Bi%5D%20%5Cequiv%20m%5Bi%5D%20&plus;%20k%5Bi%5D%20%5Cpmod%20n%24%24
