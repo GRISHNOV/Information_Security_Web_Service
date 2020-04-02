@@ -9,7 +9,7 @@ The frontend version of the project is available in the [repository](https://git
 
 The main vector of the project presents a version on the Django framework, cryptographic libraries and checksums are implemented in Python. 
 
-___The version for testing will be updated as soon as possible on the [hosting](http://xan-mixan.fun)___
+___The version for testing will be updated as soon as possible on the [hosting](http://xan-mixan.fun) (if the domain name is not available, you can use the [ip address](http://134.0.116.96:80) directly)___
 
 You can find source codes with the PHP version of the backend in the branch [php_backend_version](https://github.com/GRISHNOV/Information_Security_Web_Service/tree/php_backend_version)
     
