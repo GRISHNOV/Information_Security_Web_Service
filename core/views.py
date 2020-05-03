@@ -100,6 +100,7 @@ class DecryptionHelpView(View):
 
 
 def hashing(msg, check_sum_algorithm):
+    msg = msg.replace("\r\n", "\n")  # it is necessary to synchronize the work with multiline text on the frontend
     result, check_sum = dict(), dict()
     if check_sum_algorithm == "CRC16":
         check_sum = checksum_lib.get_crc16_modbus(msg)
@@ -135,6 +136,7 @@ def hashing(msg, check_sum_algorithm):
 
 
 def encrypt(msg, user_password, cipher_algorithm, check_sum_algorithm):
+    msg = msg.replace("\r\n", "\n")  # it is necessary to synchronize the work with multiline text on the frontend
     encrypted = None
     check_sum = None
     if cipher_algorithm == "Цезарь":
@@ -205,6 +207,8 @@ class AESEncryptionView(View):
         secret = data.get('secret')
         mode = data.get('mode')
         text = data.get('text')
+
+        text = text.replace("\r\n", "\n")  # it is necessary to synchronize the work with multiline text on the frontend
 
         if not secret or not mode or not text:
             context = {
@@ -279,8 +283,7 @@ class AESDecryptionView(View):
             json_data = json.loads(data)
             if  not isinstance(json_data, dict) or\
                 'encrypted_data' not in json_data or not json_data['encrypted_data'] or \
-                'cipher_algorithm' not in json_data or not json_data['cipher_algorithm'] or \
-                'initialization_vector' not in json_data:
+                'cipher_algorithm' not in json_data or not json_data['cipher_algorithm']:
                 raise KeyError()
         except (json.JSONDecodeError, KeyError):
             context = {
